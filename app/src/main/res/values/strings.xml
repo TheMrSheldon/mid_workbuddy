@@ -4,4 +4,24 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="new_meeting">Start Meeting</string>
+    <string-array name="array_example_activities">
+        <item>Activity 1</item>
+        <item>Activity 2</item>
+        <item>Activity 3</item>
+        <item>Activity 4</item>
+        <item>Activity 5</item>
+        <item>Activity 6</item>
+        <item>Activity 7</item>
+        <item>Activity 8</item>
+        <item>Activity 9</item>
+        <item>Activity 10</item>
+        <item>Activity 11</item>
+        <item>Activity 12</item>
+        <item>Activity 13</item>
+        <item>Activity 14</item>
+        <item>Activity 15</item>
+        <item>Activity 16</item>
+        <item>Activity 17</item>
+        <item>Activity 18</item>
+    </string-array>
 </resources>
