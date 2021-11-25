@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000E40">
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/end_call_button"
         android:layout_width="50pt"
