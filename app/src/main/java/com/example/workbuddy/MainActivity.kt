@@ -25,12 +25,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openMapActivity() {
-        Toast.makeText(this@MainActivity, "You clicked me.", Toast.LENGTH_SHORT).show()
         val intent = Intent(this@MainActivity, ActivityMap::class.java)
         startActivity(intent)
     }
     fun openCallViewActivity() {
-        Toast.makeText(this@MainActivity, "You clicked me.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this@MainActivity, "Call started", Toast.LENGTH_SHORT).show()
         val intent = Intent(this@MainActivity, ActivityCallView::class.java)
         startActivity(intent)
     }
