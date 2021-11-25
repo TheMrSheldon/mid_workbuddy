@@ -6,29 +6,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000E40">
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/end_call_button"
-        android:layout_width="50pt"
-        android:layout_height="50pt"
-        android:background="@drawable/ic_round"
-        app:backgroundTint="#FF0000"
-        app:icon="@android:drawable/ic_menu_call"
-        app:iconGravity="textStart"
-        app:iconSize="30pt"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="88dp" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomAppBar">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/mute_button"
-        android:layout_width="80pt"
-        android:layout_height="80pt"
-        android:background="@drawable/ic_round"
-        app:backgroundTint="#535353"
-        app:icon="@android:drawable/stat_notify_call_mute"
-        app:iconGravity="textStart"
-        app:iconSize="50pt"
-        tools:layout_editor_absoluteX="103dp"
-        tools:layout_editor_absoluteY="272dp" />
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="100sp"
+            android:gravity="center"
+            android:weightSum="2" >
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/end_call_button"
+            android:layout_width="50pt"
+            android:layout_height="50pt"
+            android:background="@drawable/ic_round"
+            app:backgroundTint="#FF0000"
+            app:icon="@android:drawable/ic_menu_call"
+            app:iconGravity="textStart"
+            app:iconSize="30pt" />
+        </TableRow>
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3sp"
+            android:gravity="center"
+            android:weightSum="2" >
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mute_button"
+            android:layout_width="80pt"
+            android:layout_height="80pt"
+            android:background="@drawable/ic_round"
+            app:backgroundTint="#535353"
+            app:icon="@android:drawable/stat_notify_call_mute"
+            app:iconGravity="textStart"
+            app:iconSize="50pt"/>
+        </TableRow>
+    </TableLayout>
+
+
+
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
@@ -39,4 +60,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

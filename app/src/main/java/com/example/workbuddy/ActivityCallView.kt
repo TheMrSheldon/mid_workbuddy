@@ -12,7 +12,7 @@ class ActivityCallView : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_call_view)
-        val button = findViewById<MaterialButton>(R.id.mute_button)
+        val button = findViewById<MaterialButton>(R.id.end_call_button)
         button.setOnClickListener {
             openMapActivity()
         }
