@@ -52,7 +52,10 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    implementation 'com.github.MKergall:osmbonuspack:6.8.0'
+
     implementation 'org.osmdroid:osmdroid-android:6.1.10'
     implementation 'org.osmdroid:osmdroid-wms:6.1.10'
+
 
 }
