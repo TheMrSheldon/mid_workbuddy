@@ -6,10 +6,8 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.preference.PreferenceManager
-import android.widget.Toast.*
 import androidx.core.content.ContextCompat
 
 import org.osmdroid.config.Configuration
@@ -24,9 +22,9 @@ import org.osmdroid.views.overlay.Polyline.OnClickListener
 
 
 class ActivityMap : AppCompatActivity() {
-    private val REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private lateinit var map : MapView;
+    private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
 
+    private lateinit var map : MapView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,25 +40,25 @@ class ActivityMap : AppCompatActivity() {
             openMainActivity()
         }
 
-        map = findViewById<MapView>(R.id.map)
-        val mapController = map.getController()
-        mapController.setZoom(13)
-        mapController.setCenter(GeoPoint(52388549, 9712665))
+        map = findViewById(R.id.map)
+        val mapController = map.controller
+        mapController.setZoom(13.0)
+        mapController.setCenter(GeoPoint(52388549.0, 9712665.0))
 
 
 
         val points = ArrayList<GeoPoint>()
         for (i in 0..29){
-            points.add(LabelledGeoPoint(37 + Math.random() * 5, -8 + Math.random() * 5
-                , "Point #" + i));
+            points.add(LabelledGeoPoint(
+                37 + Math.random() * 5, -8 + Math.random() * 5 , "Point #$i"
+            ))
         }
-        val add = points.add(points[0])
+        points.add(points[0])
 
-        drawoverlay(map, mapController, points, listener = listener(this))
+        drawoverlay(map, mapController, points, listener = Listener(this))
     }
 
-    fun openMainActivity() {
-        makeText(this@ActivityMap, "You clicked me.", LENGTH_SHORT).show()
+    private fun openMainActivity() {
         val intent = Intent(this@ActivityMap, MainActivity::class.java)
         startActivity(intent)
     }
@@ -71,22 +69,19 @@ class ActivityMap : AppCompatActivity() {
     }
 
     override fun onPause() {
-        super.onPause();
+        super.onPause()
         map.onPause()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        val permissionsToRequest = ArrayList<String>();
-        var i = 0;
-        while (i < grantResults.size) {
-            permissionsToRequest.add(permissions[i]);
-            i++;
-        }
+        val permissionsToRequest = ArrayList<String>()
+        permissionsToRequest.addAll(permissions)
+
         if (permissionsToRequest.size > 0) {
             ActivityCompat.requestPermissions(
                 this,
                 permissionsToRequest.toTypedArray(),
-                REQUEST_PERMISSIONS_REQUEST_CODE);
+                REQUEST_PERMISSIONS_REQUEST_CODE)
         }
     }
 
@@ -101,20 +96,18 @@ class ActivityMap : AppCompatActivity() {
         val poly = RoadManager.buildRoadOverlay(road)*/
         val poly = Polyline()
         poly.setPoints(points)
-        poly.color = Color.BLUE
-        val l = listener
-        poly.setOnClickListener(l)
-        mapView.overlays.add(poly as Polyline);
+        poly.outlinePaint.color = Color.BLUE
+        poly.setOnClickListener(listener)
+        mapView.overlays.add(poly)
 
         controller.setCenter(points[0])
     }
-    private class listener( val map: Context) : Polyline.OnClickListener{
-
+    private class Listener(val map: Context) : OnClickListener{
         override fun onClick(polyline: Polyline, mapView: MapView, eventPos: GeoPoint): Boolean {
-            for (o in mapView.overlays){
+            for (o in mapView.overlays) {
                 if (o is Marker) mapView.overlays.remove(o)
             }
-            Toast.makeText(mapView.getContext(), "polyline with " + polyline.getPoints().size + "pts was tapped", Toast.LENGTH_LONG).show()
+            //Toast.makeText(mapView.context, "polyline with ${polyline.actualPoints.size} pts was tapped", Toast.LENGTH_LONG).show()
             val marker = Marker(mapView)
             marker.position = eventPos
 
@@ -125,17 +118,7 @@ class ActivityMap : AppCompatActivity() {
             mapView.invalidate()
             return false
         }
-
     }
 
 
 }
-
-private fun <E> MutableList<E>.removeIf(function: (E) -> Unit) {
-
-}
-
-
-
-
-
