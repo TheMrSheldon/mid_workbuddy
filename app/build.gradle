@@ -54,8 +54,8 @@ dependencies {
 
     implementation 'com.github.MKergall:osmbonuspack:6.8.0'
 
-    implementation 'org.osmdroid:osmdroid-android:6.1.10'
-    implementation 'org.osmdroid:osmdroid-wms:6.1.10'
+    implementation 'org.osmdroid:osmdroid-android:6.1.11'
+    implementation 'org.osmdroid:osmdroid-wms:6.1.11'
 
 
 }
