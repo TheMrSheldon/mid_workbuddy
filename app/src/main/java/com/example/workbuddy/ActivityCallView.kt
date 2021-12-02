@@ -61,9 +61,9 @@ class ActivityCallView : AppCompatActivity() {
 
     fun startAudioInstance(sessionName: String) {
         // create file
-        /** File dir = getExternalMediaDirs()
+        val dir = getExternalMediaDirs()
         try {
-            audiofile = File.createTempFile(sessionName, ".3gp", dir)
+            audiofile = File.createTempFile(sessionName, ".3gp", dir[0])
         } catch (e: IOException) {
             Log.e("Audiofile", "storage error");
         }
@@ -73,14 +73,14 @@ class ActivityCallView : AppCompatActivity() {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
             setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-            setOutputFile(audiofile.getAbsolutePath())
+            setOutputFile(audiofile?.getAbsolutePath())
             try {
                 prepare()
             } catch (e: IOException) {
                 Log.e("MediaRecorderObject", "prepare() failed")
             }
             start()
-        } **/
+        }
     }
 
 
