@@ -1,7 +1,9 @@
 package com.example.workbuddy
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.media.MediaRecorder
 import android.os.Bundle
@@ -11,6 +13,8 @@ import android.widget.ImageButton
 import android.os.Environment
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import java.io.File
 import java.io.IOException
@@ -41,6 +45,8 @@ class ActivityCallView : AppCompatActivity() {
 
         if (sessionName != null) {
             startAudioInstance(sessionName)
+
+
         } else { // TODO reimplement for better error handling
            openMainActivity()
         }
