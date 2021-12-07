@@ -10,6 +10,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.masoudss.lib.WaveformSeekBar
 
 import org.osmdroid.config.Configuration
 import org.osmdroid.views.MapView
@@ -22,6 +23,7 @@ import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.Polyline.OnClickListener
+import java.io.File
 import java.lang.Double.max
 import java.lang.Double.min
 import java.util.stream.IntStream
@@ -78,6 +80,11 @@ class ActivityMap : AppCompatActivity() {
                 TODO("Not yet implemented")
             }
         }))
+
+        val waveformSeekBar = findViewById<ImageButton>(R.id.waveformSeekBar) as WaveformSeekBar
+        val dir = externalMediaDirs
+        waveformSeekBar.setSampleFrom(dir[0].absolutePath + "/session1812623032250588570643.mp3")
+
     }
 
     private fun openMainActivity() {
