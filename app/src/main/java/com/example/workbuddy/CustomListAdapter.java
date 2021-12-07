@@ -48,8 +48,8 @@ public class CustomListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.name.setText(listData.get(position).getName());
-        holder.datetime.setText(listData.get(position).getDatetime());
+        holder.name.setText(listData.get(position).name);
+        holder.datetime.setText(listData.get(position).timestamp);
         return convertView;
     }
 

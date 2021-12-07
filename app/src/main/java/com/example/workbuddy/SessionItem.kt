@@ -1,23 +1,14 @@
 package com.example.workbuddy
 
-class SessionItem(xml: String) {
+class SessionItem(filename: String) {
 
-    var name: String? = null
-    var timestamp: String? = null
+    lateinit var filename: String
+    lateinit var name: String
+    lateinit var timestamp: String
 
     init {
-        // TODO: Load XML file
-        // TODO: Set name and timestamp
-        name = "Demo session name"
+        this.filename = filename
+        name = filename.split("_")[0]
+        timestamp = filename.split("_")[1]
     }
-
-    fun getDate(): String? {
-        return name
-    }
-
-    fun getDatetime(): String {
-        // TODO: Convert timestamp to readable format
-        return "Demo date";
-    }
-
 }

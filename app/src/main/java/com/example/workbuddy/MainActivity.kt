@@ -2,6 +2,7 @@ package com.example.workbuddy
 
 import android.widget.AdapterView.OnItemClickListener
 import android.Manifest
+import android.R.attr
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,8 +14,10 @@ import android.widget.ListView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.content.DialogInterface
+import android.util.Log
 import android.widget.EditText
 import java.util.ArrayList
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,8 +34,7 @@ class MainActivity : AppCompatActivity() {
             OnItemClickListener { a, v, position, id ->
                 val o = activityListView.getItemAtPosition(position)
                 val session: SessionItem = o as SessionItem
-                // TODO: Open ActivityMap with name session.name
-                // session.name
+                openMapActivity(session.filename)
             }
 
         // make session runnable
@@ -56,15 +58,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun getSessionData(): ArrayList<SessionItem> {
         val output: ArrayList<SessionItem> = ArrayList<SessionItem>()
-
-        // TODO: For all XML files create a new session and add it to output
-
-        // EXAMPLE DATA:
-        val session1: SessionItem = SessionItem("test")
-        val session2: SessionItem = SessionItem("test")
-        output.add(session1)
-        output.add(session2)
-
+        val dir = externalMediaDirs[0].absolutePath
+        val files: Array<File> = File(dir).listFiles()
+        for (file in files) {
+            if(!file.name.contains("mp3")) continue
+            val filename: String = file.name.substring(0,file.name.lastIndexOf("."))
+            val tmp: SessionItem = SessionItem(filename)
+            output.add(tmp)
+        }
         return output;
     }
 
@@ -91,6 +92,12 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this@MainActivity, "Call started", Toast.LENGTH_SHORT).show()
         val intent = Intent(this@MainActivity, ActivityCallView::class.java)
         intent.putExtra("session", sessionNumber)
+        startActivity(intent)
+    }
+
+    fun openMapActivity(sessionName: String) {
+        val intent = Intent(this@MainActivity, ActivityMap::class.java)
+        intent.putExtra("session", sessionName )
         startActivity(intent)
     }
 }
