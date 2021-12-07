@@ -2,14 +2,17 @@ package com.example.workbuddy
 
 import android.content.Intent
 import android.graphics.Color
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import android.preference.PreferenceManager
 import android.util.Log
-import android.view.View
 import androidx.core.content.ContextCompat
+import com.google.android.material.button.MaterialButton
+import com.masoudss.lib.SeekBarOnProgressChanged
 import com.masoudss.lib.WaveformSeekBar
 
 import org.osmdroid.config.Configuration
@@ -22,22 +25,19 @@ import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
-import org.osmdroid.views.overlay.Polyline.OnClickListener
 import java.io.File
 import java.lang.Double.max
 import java.lang.Double.min
 import java.util.stream.IntStream
-import java.util.stream.Stream
-import kotlin.jvm.internal.Intrinsics
-import kotlin.streams.toList
 
 
 class ActivityMap : AppCompatActivity() {
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
-
+    private lateinit var player: MediaPlayer
     private lateinit var map : MapView
     private var points = ArrayList<GeoPoint>()
-
+    private lateinit var waveformSeekBar: WaveformSeekBar
+    lateinit var marker : Marker
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -81,10 +81,43 @@ class ActivityMap : AppCompatActivity() {
             }
         }))
 
-        val waveformSeekBar = findViewById<ImageButton>(R.id.waveformSeekBar) as WaveformSeekBar
-        val dir = externalMediaDirs
-        waveformSeekBar.setSampleFrom(dir[0].absolutePath + "/session1812623032250588570643.mp3")
+        marker = Marker(map)
+        marker.position = points[0]
+        marker.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_place_24)
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        map.overlays.add(marker)
+        map.invalidate()
 
+        val dir = externalMediaDirs
+        player = MediaPlayer.create(this, Uri.fromFile(File(dir[0].absolutePath + "/session1812623032250588570643.mp3")))
+        waveformSeekBar = findViewById<WaveformSeekBar>(R.id.waveformSeekBar)
+        waveformSeekBar.setSampleFrom(dir[0].absolutePath + "/session1812623032250588570643.mp3")
+        waveformSeekBar.progress = 0.0F
+        waveformSeekBar.maxProgress = player.duration.toFloat()
+        waveformSeekBar.onProgressChanged = object : SeekBarOnProgressChanged {
+
+            override fun onProgressChanged(
+                waveformSeekBar: WaveformSeekBar,
+                progress: Float,
+                fromUser: Boolean
+            ) {
+                if(fromUser) player.seekTo(progress.toInt())
+
+            }
+        }
+        var observer = MediaObserver(waveformSeekBar,player, map, points)
+        Thread(observer).start()
+
+
+        val playbutton = findViewById<MaterialButton>(R.id.play_button)
+        playbutton.setOnClickListener {
+            if(player?.isPlaying){
+                player?.pause()
+            }else{
+                player?.start()
+            }
+
+        }
     }
 
     private fun openMainActivity() {
@@ -124,24 +157,23 @@ class ActivityMap : AppCompatActivity() {
     }
 
     private fun onClickOnMap(mapView: MapView, eventPos: GeoPoint?) : Boolean {
-        mapView.overlays.removeIf { o -> o is Marker }
+        //mapView.overlays.removeIf { o -> o is Marker }
         val closest = IntStream.range(0, points.size)
             .mapToObj { i -> projectOntoLine(points[i], points[(i+1) % points.size], eventPos!!) }
             .filter { pair -> !pair.first.isNaN() }
             .min(Comparator.comparingDouble{p-> eventPos!!.distanceToAsDouble(p.second)}).get()
-        onReplayPositionSelected(closest.first, closest.second)
+        onReplayPositionSelected(closest.first, closest.second, map)
         return false
     }
 
-    private fun onReplayPositionSelected(playbackPos : Double, point : GeoPoint) {
-        // Update the marker
-        val marker = Marker(map)
-        marker.position = point
-        marker.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_place_24)
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        map.overlays.add(marker)
-        map.invalidate()
+    private fun onReplayPositionSelected(playbackPos : Double, point : GeoPoint, map: MapView) {
+            // Update the marker
+            marker.position = point
+            map.invalidate()
+            player.seekTo(points.indexOf(point) * (player.duration / points.size))
     }
+
+
 
     private fun projectOntoLine(line1 : GeoPoint, line2 : GeoPoint, point : GeoPoint) : Pair<Double, GeoPoint> {
         val aplong = point.longitude - line1.longitude
@@ -157,4 +189,41 @@ class ActivityMap : AppCompatActivity() {
         val closest = GeoPoint(line1.latitude+ablat*t, line1.longitude + ablong * t)
         return Pair(t, closest)
     }
+
+    private class MediaObserver(
+        waveformSeekBar: WaveformSeekBar,
+        player: MediaPlayer,
+        map: MapView,
+        points: ArrayList<GeoPoint>
+    ) : Runnable {
+        val waveformSeekBar: WaveformSeekBar
+        val player: MediaPlayer
+        val map: MapView
+        val points: ArrayList<GeoPoint>
+
+        init{
+            this.waveformSeekBar= waveformSeekBar
+            this.player = player
+            this.map = map
+            this.points = points
+
+        }
+        override fun run() {
+            val last = player.currentPosition
+            while (true){
+                if(last == player.currentPosition) continue
+                waveformSeekBar.progress = player.currentPosition.toFloat()
+                //Log.e("Progressbar", player.currentPosition.toString());
+                val marker = map.overlays.find { o -> o is Marker } as Marker
+                marker.position = points[player.currentPosition / (player.duration /points.size)]
+                map.invalidate()
+                Thread.sleep(10)
+
+
+            }
+        }
+    }
+
+
+
 }
