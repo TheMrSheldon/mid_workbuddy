@@ -1,14 +1,17 @@
 package com.example.workbuddy
 
-class SessionItem(filename: String) {
+import android.text.format.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
-    lateinit var filename: String
-    lateinit var name: String
-    lateinit var timestamp: String
+class SessionItem(var filename: String) {
+
+    var name: String = filename.split("_")[0]
+    var datetime: String
 
     init {
-        this.filename = filename
-        name = filename.split("_")[0]
-        timestamp = filename.split("_")[1]
+        val timestamp: String = filename.split("_")[1]
+        val date: Date = SimpleDateFormat("yyyyMMddHHmmss").parse(timestamp)
+        this.datetime = DateFormat.format("dd.MM.yy, HH:mm", date).toString()
     }
 }

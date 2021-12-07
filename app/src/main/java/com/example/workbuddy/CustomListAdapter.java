@@ -49,7 +49,7 @@ public class CustomListAdapter extends BaseAdapter {
         }
 
         holder.name.setText(listData.get(position).name);
-        holder.datetime.setText(listData.get(position).timestamp);
+        holder.datetime.setText(listData.get(position).datetime);
         return convertView;
     }
 
