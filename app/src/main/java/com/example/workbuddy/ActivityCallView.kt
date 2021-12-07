@@ -156,8 +156,8 @@ class ActivityCallView : AppCompatActivity() {
     private class OurCallback() : LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {
             super.onLocationResult(p0)
-            val lat = (p0.lastLocation.latitude * 1E6) as Int
-            val lng = (p0.lastLocation.longitude * 1E6) as Int
+            val lat = (p0.lastLocation.latitude * 1E6)
+            val lng = (p0.lastLocation.longitude * 1E6)
             val point = GeoPoint(lat, lng)
             //SAVE POINT
         }

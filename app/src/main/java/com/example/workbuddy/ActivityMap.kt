@@ -1,6 +1,5 @@
 package com.example.workbuddy
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -8,6 +7,8 @@ import androidx.core.app.ActivityCompat
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import android.preference.PreferenceManager
+import android.util.Log
+import android.view.View
 import androidx.core.content.ContextCompat
 
 import org.osmdroid.config.Configuration
@@ -16,15 +17,24 @@ import org.osmdroid.util.*
 import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint
 
 import org.osmdroid.api.IMapController
+import org.osmdroid.events.MapEventsReceiver
+import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.Polyline.OnClickListener
+import java.lang.Double.max
+import java.lang.Double.min
+import java.util.stream.IntStream
+import java.util.stream.Stream
+import kotlin.jvm.internal.Intrinsics
+import kotlin.streams.toList
 
 
 class ActivityMap : AppCompatActivity() {
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
 
     private lateinit var map : MapView
+    private var points = ArrayList<GeoPoint>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +43,7 @@ class ActivityMap : AppCompatActivity() {
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
         //
 
+        val sessionName = intent.getStringExtra("session")
 
         setContentView(R.layout.activity_map)
         val button = findViewById<ImageButton>(R.id.return_button)
@@ -42,20 +53,31 @@ class ActivityMap : AppCompatActivity() {
 
         map = findViewById(R.id.map)
         val mapController = map.controller
-        mapController.setZoom(13.0)
-        mapController.setCenter(GeoPoint(52388549.0, 9712665.0))
 
-
-
-        val points = ArrayList<GeoPoint>()
         for (i in 0..29){
             points.add(LabelledGeoPoint(
-                37 + Math.random() * 5, -8 + Math.random() * 5 , "Point #$i"
+                37 + Math.random() * 2, -8 + Math.random() * 2 , "Point #$i"
             ))
         }
         points.add(points[0])
 
-        drawoverlay(map, mapController, points, listener = Listener(this))
+        map.addOnFirstLayoutListener { _, _, _, _, _ ->
+            val bounds = BoundingBox.fromGeoPoints(points)
+            map.zoomToBoundingBox(bounds, false)
+            map.invalidate()
+        }
+
+        drawOverlay(map, mapController, points)
+        map.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
+            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                onClickOnMap(map, p);
+                return false
+            }
+
+            override fun longPressHelper(p: GeoPoint?): Boolean {
+                TODO("Not yet implemented")
+            }
+        }))
     }
 
     private fun openMainActivity() {
@@ -85,40 +107,47 @@ class ActivityMap : AppCompatActivity() {
         }
     }
 
-    fun drawoverlay(mapView: MapView, controller: IMapController, points: ArrayList<GeoPoint>, listener: OnClickListener){
-        // set polyline overlay
-
-        // add overlay
-        /*
-        val roadManager = OSRMRoadManager(mapView.context, Configuration.getInstance().userAgentValue)
-        roadManager.setMean(OSRMRoadManager.MEAN_BY_FOOT)
-        var road = roadManager.getRoad(points)
-        val poly = RoadManager.buildRoadOverlay(road)*/
+    private fun drawOverlay(mapView: MapView, controller: IMapController, points: ArrayList<GeoPoint>) {
         val poly = Polyline()
         poly.setPoints(points)
         poly.outlinePaint.color = Color.BLUE
-        poly.setOnClickListener(listener)
         mapView.overlays.add(poly)
 
         controller.setCenter(points[0])
     }
-    private class Listener(val map: Context) : OnClickListener{
-        override fun onClick(polyline: Polyline, mapView: MapView, eventPos: GeoPoint): Boolean {
-            for (o in mapView.overlays) {
-                if (o is Marker) mapView.overlays.remove(o)
-            }
-            //Toast.makeText(mapView.context, "polyline with ${polyline.actualPoints.size} pts was tapped", Toast.LENGTH_LONG).show()
-            val marker = Marker(mapView)
-            marker.position = eventPos
 
-            marker.icon = ContextCompat.getDrawable(this.map, R.drawable.ic_baseline_place_24)
-
-            marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
-            mapView.overlays.add(marker)
-            mapView.invalidate()
-            return false
-        }
+    private fun onClickOnMap(mapView: MapView, eventPos: GeoPoint?) : Boolean {
+        mapView.overlays.removeIf { o -> o is Marker }
+        val closest = IntStream.range(0, points.size)
+            .mapToObj { i -> projectOntoLine(points[i], points[(i+1) % points.size], eventPos!!) }
+            .filter { pair -> !pair.first.isNaN() }
+            .min(Comparator.comparingDouble{p-> eventPos!!.distanceToAsDouble(p.second)}).get()
+        onReplayPositionSelected(closest.first, closest.second)
+        return false
     }
 
+    private fun onReplayPositionSelected(playbackPos : Double, point : GeoPoint) {
+        // Update the marker
+        val marker = Marker(map)
+        marker.position = point
+        marker.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_place_24)
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        map.overlays.add(marker)
+        map.invalidate()
+    }
 
+    private fun projectOntoLine(line1 : GeoPoint, line2 : GeoPoint, point : GeoPoint) : Pair<Double, GeoPoint> {
+        val aplong = point.longitude - line1.longitude
+        val aplat = point.latitude - line1.latitude
+        val ablong = line2.longitude - line1.longitude
+        val ablat = line2.latitude - line1.latitude
+
+        val ab2 = ablong*ablong + ablat*ablat
+        val ap_ab = aplong*ablong + aplat*ablat
+
+        val t = min(max(ap_ab/ab2, 0.0), 1.0)
+
+        val closest = GeoPoint(line1.latitude+ablat*t, line1.longitude + ablong * t)
+        return Pair(t, closest)
+    }
 }
