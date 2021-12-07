@@ -3,25 +3,5 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="new_meeting">Start Meeting</string>
-    <string-array name="array_example_activities">
-        <item>Session1</item>
-        <item>Session2</item>
-        <item>Session3</item>
-        <item>Session4</item>
-        <item>Session5</item>
-        <item>Session6</item>
-        <item>Session7</item>
-        <item>Session8</item>
-        <item>Session9</item>
-        <item>Session10</item>
-        <item>Session11</item>
-        <item>Session12</item>
-        <item>Session13</item>
-        <item>Session14</item>
-        <item>Session15</item>
-        <item>Session16</item>
-        <item>Session17</item>
-        <item>Session18</item>
-    </string-array>
+    <string name="new_meeting">Create New Meeting</string>
 </resources>

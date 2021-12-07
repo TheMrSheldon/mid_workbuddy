@@ -1,21 +1,20 @@
 package com.example.workbuddy
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.workbuddy.databinding.ActivityMainBinding
-
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.material.internal.ContextUtils.getActivity
+import android.content.DialogInterface
+import android.widget.EditText
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,14 +24,12 @@ class MainActivity : AppCompatActivity() {
     private var arrayAdapter: ArrayAdapter<*>? = null
     private lateinit var exampleActivities: Array<String>
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         checkPermission()
-        activityListView = findViewById(R.id.months_list);
-        exampleActivities = getResources().getStringArray(R.array.array_example_activities);
+        activityListView = findViewById(R.id.activity_list)
+        exampleActivities = arrayOf("session1", "session2")
         arrayAdapter = ArrayAdapter<Any?>(this, android.R.layout.simple_list_item_1, exampleActivities)
 
         // create session name for new session
@@ -46,10 +43,23 @@ class MainActivity : AppCompatActivity() {
         // make session runable
         val button = findViewById<Button>(R.id.StartMeeting)
         button.setOnClickListener {
-            openCallViewActivity(newSession)
+            showSessionNamePrompt()
         }
 
         // TODO make old sessions viewable
+    }
+
+    fun showSessionNamePrompt() {
+        val alert: AlertDialog.Builder = AlertDialog.Builder(this)
+        alert.setTitle("Meeting name")
+        val input = EditText(this)
+        alert.setView(input)
+        alert.setPositiveButton("Start meeting", DialogInterface.OnClickListener { dialog, whichButton ->
+            val sessionName = input.text.toString()
+            openCallViewActivity(sessionName)
+        })
+        alert.setNegativeButton("Cancel") { _, _ -> {} }
+        alert.show()
     }
 
     fun getSessionName(lastSession: String): String {
@@ -89,5 +99,3 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 }
-
-
