@@ -1,5 +1,6 @@
 package com.example.workbuddy
 
+import android.widget.AdapterView.OnItemClickListener
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
@@ -8,69 +9,63 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.workbuddy.databinding.ActivityMainBinding
-import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.content.DialogInterface
 import android.widget.EditText
+import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
-
-    private var activityListView: ListView? = null
-    private var arrayAdapter: ArrayAdapter<*>? = null
-    private lateinit var exampleActivities: Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         checkPermission()
-        activityListView = findViewById(R.id.activity_list)
-        exampleActivities = arrayOf("session1", "session2")
-        arrayAdapter = ArrayAdapter<Any?>(this, android.R.layout.simple_list_item_1, exampleActivities)
 
-        // create session name for new session
-        var newSession = "session1"
-        if ((arrayAdapter as ArrayAdapter<*>).count != 0) {
-            val sessionName = (arrayAdapter as ArrayAdapter<*>).getItem(
-                (arrayAdapter as ArrayAdapter<*>).count - 1)
-            newSession = getSessionName(sessionName as String)
-        }
-        activityListView?.adapter = arrayAdapter
-        // make session runable
-        val button = findViewById<Button>(R.id.StartMeeting)
-        button.setOnClickListener {
+        // display past sessions
+        val sessions: ArrayList<SessionItem> = getSessionData()
+        val activityListView: ListView? = findViewById(R.id.session_list)
+        activityListView!!.adapter = CustomListAdapter(this, sessions)
+        activityListView.onItemClickListener =
+            OnItemClickListener { a, v, position, id ->
+                val o = activityListView.getItemAtPosition(position)
+                val session: SessionItem = o as SessionItem
+                // TODO: Open ActivityMap with name session.name
+                // session.name
+            }
+
+        // make session runnable
+        val startMeetingButton = findViewById<Button>(R.id.StartMeeting)
+        startMeetingButton.setOnClickListener {
             showSessionNamePrompt()
         }
-
-        // TODO make old sessions viewable
     }
 
-    fun showSessionNamePrompt() {
+    private fun showSessionNamePrompt() {
         val alert: AlertDialog.Builder = AlertDialog.Builder(this)
         alert.setTitle("Meeting name")
         val input = EditText(this)
         alert.setView(input)
         alert.setPositiveButton("Start meeting", DialogInterface.OnClickListener { dialog, whichButton ->
-            val sessionName = input.text.toString()
-            openCallViewActivity(sessionName)
+            openCallViewActivity(input.text.toString())
         })
         alert.setNegativeButton("Cancel") { _, _ -> {} }
         alert.show()
     }
 
-    fun getSessionName(lastSession: String): String {
-        val num = lastSession.replace("[^0-9]".toRegex(), "")
-        return  "session" + Integer.parseInt(num) + 1
+    private fun getSessionData(): ArrayList<SessionItem> {
+        val output: ArrayList<SessionItem> = ArrayList<SessionItem>()
 
-    }
+        // TODO: For all XML files create a new session and add it to output
 
-    fun openMapActivity() {
-        val intent = Intent(this@MainActivity, ActivityMap::class.java)
-        startActivity(intent)
+        // EXAMPLE DATA:
+        val session1: SessionItem = SessionItem("test")
+        val session2: SessionItem = SessionItem("test")
+        output.add(session1)
+        output.add(session2)
+
+        return output;
     }
 
     private fun checkPermission() {
