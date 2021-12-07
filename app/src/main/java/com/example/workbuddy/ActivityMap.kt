@@ -63,6 +63,8 @@ class ActivityMap : AppCompatActivity() {
         }
         points.add(points[0])
 
+
+        //TODO: MARKOS MACHT DAS HIER MIT DEN PUNKTEN und speichert es im points array ab
         map.addOnFirstLayoutListener { _, _, _, _, _ ->
             val bounds = BoundingBox.fromGeoPoints(points)
             map.zoomToBoundingBox(bounds, false)
@@ -89,9 +91,9 @@ class ActivityMap : AppCompatActivity() {
         map.invalidate()
 
         val dir = externalMediaDirs
-        player = MediaPlayer.create(this, Uri.fromFile(File(dir[0].absolutePath + "/session1812623032250588570643.mp3")))
+        player = MediaPlayer.create(this, Uri.fromFile(File(dir[0].absolutePath + sessionName + ".mp3")))
         waveformSeekBar = findViewById<WaveformSeekBar>(R.id.waveformSeekBar)
-        waveformSeekBar.setSampleFrom(dir[0].absolutePath + "/session1812623032250588570643.mp3")
+        waveformSeekBar.setSampleFrom(dir[0].absolutePath + sessionName + ".mp3")
         waveformSeekBar.progress = 0.0F
         waveformSeekBar.maxProgress = player.duration.toFloat()
         waveformSeekBar.onProgressChanged = object : SeekBarOnProgressChanged {

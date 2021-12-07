@@ -69,9 +69,9 @@ class ActivityCallView : AppCompatActivity() {
         cancel.setOnClickListener {
             locationManager.removeUpdates(this::getCoordinate)
             if (sessionName != null) {
-                //storeGeoPoints(sessionName)
+                storeGeoPoints(sessionName)
             }
-            openMapActivity()
+            openMapActivity(sessionName.toString())
         }
 
         mute.setOnClickListener {
@@ -96,9 +96,12 @@ class ActivityCallView : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun openMapActivity() {
+    fun openMapActivity(sessionName: String) {
         Toast.makeText(this@ActivityCallView, "Call closed", Toast.LENGTH_SHORT).show()
         val intent = Intent(this@ActivityCallView, ActivityMap::class.java)
+        intent.putExtra("session", sessionName + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
+            Date()
+        ))
         terminateAudioInstance()
         startActivity(intent)
     }
@@ -107,7 +110,10 @@ class ActivityCallView : AppCompatActivity() {
         // create file
         val dir = externalMediaDirs
         try {
-            audiofile = File.createTempFile(sessionName, ".mp3", dir[0])
+            audiofile = File(externalMediaDirs[0].absolutePath+ "/" + sessionName + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
+                Date()
+            ) + ".mp3")
+
         } catch (e: IOException) {
             Log.e("Audiofile", "storage error");
         }
@@ -147,9 +153,9 @@ class ActivityCallView : AppCompatActivity() {
     }
 
     private fun storeGeoPoints(name: String) {
-        val dir = externalMediaDirs[0].absolutePath + name + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
+        val dir = externalMediaDirs[0].absolutePath+ "/" + name + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
             Date()
-        ) + ".jsonl"
+        ) + ".json"
         val coordinates = File(dir)
         Log.d("dir", dir)
         coordinates.bufferedWriter().use { out ->
