@@ -25,6 +25,8 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ActivityCallView : AppCompatActivity() {
 
@@ -66,6 +68,9 @@ class ActivityCallView : AppCompatActivity() {
         // define function for buttons
         cancel.setOnClickListener {
             locationManager.removeUpdates(this::getCoordinate)
+            if (sessionName != null) {
+                //storeGeoPoints(sessionName)
+            }
             openMapActivity()
         }
 
@@ -141,8 +146,19 @@ class ActivityCallView : AppCompatActivity() {
 
     }
 
-    private fun storeGeoPoints() {
-        val xmlSerializer = Xml.newSerializer()
+    private fun storeGeoPoints(name: String) {
+        val dir = externalMediaDirs[0].absolutePath + name + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
+            Date()
+        ) + ".jsonl"
+        val coordinates = File(dir)
+        Log.d("dir", dir)
+        coordinates.bufferedWriter().use { out ->
+            out.write("{\n")
+            for((index, coordinate) in points.withIndex()) {
+                out.write("    \"coordinate" + index.toString() + "\":" + coordinate.toString() + "\n")
+            }
+            out.write("}")
+        }
     }
 
 
