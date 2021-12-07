@@ -96,8 +96,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openMapActivity(sessionName: String) {
+        Log.e("TESTING","1")
         val intent = Intent(this@MainActivity, ActivityMap::class.java)
         intent.putExtra("session", sessionName )
+        Log.e("TESTING",sessionName)
         startActivity(intent)
     }
 }

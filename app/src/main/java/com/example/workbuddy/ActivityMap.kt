@@ -82,7 +82,7 @@ class ActivityMap : AppCompatActivity() {
                 TODO("Not yet implemented")
             }
         }))
-
+        Log.e("TESTING",sessionName.toString())
         marker = Marker(map)
         marker.position = points[0]
         marker.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_place_24)
@@ -91,9 +91,9 @@ class ActivityMap : AppCompatActivity() {
         map.invalidate()
 
         val dir = externalMediaDirs
-        player = MediaPlayer.create(this, Uri.fromFile(File(dir[0].absolutePath + sessionName + ".mp3")))
+        player = MediaPlayer.create(this, Uri.fromFile(File(dir[0].absolutePath +"/"+ sessionName.toString() + ".mp3")))
         waveformSeekBar = findViewById<WaveformSeekBar>(R.id.waveformSeekBar)
-        waveformSeekBar.setSampleFrom(dir[0].absolutePath + sessionName + ".mp3")
+        waveformSeekBar.setSampleFrom(dir[0].absolutePath + "/" + sessionName.toString() + ".mp3")
         waveformSeekBar.progress = 0.0F
         waveformSeekBar.maxProgress = player.duration.toFloat()
         waveformSeekBar.onProgressChanged = object : SeekBarOnProgressChanged {
