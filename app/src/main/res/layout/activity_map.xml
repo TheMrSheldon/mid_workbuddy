@@ -45,23 +45,22 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
-            <ImageButton
-                android:id="@+id/return_button"
+
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/play_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="?attr/actionModeCloseDrawable" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/play_button"
-                android:layout_width="30pt"
-                android:layout_height="30pt"
-                android:background="@drawable/ic_round"
-                app:backgroundTint="#818181"
-                app:icon="@android:drawable/ic_media_play"
-                app:iconGravity="textStart"
-                app:iconSize="20pt"/>
+                android:layout_gravity="end|bottom"
+                android:layout_margin="10dp"
+                android:src="@android:drawable/ic_media_play"
+                android:tint="@android:color/secondary_text_light"
+                app:backgroundTint="@color/purple_200"
+                app:fabSize="auto"/>
 
             <!--com.imn.iivisu.RecorderVisualizer
                 android:id="@+id/visualizer"

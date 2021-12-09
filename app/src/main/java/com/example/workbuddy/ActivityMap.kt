@@ -12,6 +12,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.masoudss.lib.SeekBarOnProgressChanged
 import com.masoudss.lib.WaveformSeekBar
 import com.masoudss.lib.utils.WaveGravity
@@ -49,10 +50,7 @@ class ActivityMap : AppCompatActivity() {
         val sessionName = intent.getStringExtra("session")
 
         setContentView(R.layout.activity_map)
-        val button = findViewById<ImageButton>(R.id.return_button)
-        button.setOnClickListener {
-            openMainActivity()
-        }
+
 
         map = findViewById(R.id.map)
         val mapController = map.controller
@@ -123,13 +121,15 @@ class ActivityMap : AppCompatActivity() {
         }.start()
 
 
-        val playbutton = findViewById<MaterialButton>(R.id.play_button)
+        val playbutton = findViewById<FloatingActionButton>(R.id.play_button)
         playbutton.setOnClickListener {
-            if (player.isPlaying)
+            if (player.isPlaying) {
                 player.pause()
-            else
-                player.start()
-
+                playbutton.setImageDrawable(resources.getDrawable(R.drawable.ic_media_pause))
+            }else{
+            player.start()
+            playbutton.setImageDrawable(resources.getDrawable(R.drawable.ic_media_play))
+            }
         }
     }
 
