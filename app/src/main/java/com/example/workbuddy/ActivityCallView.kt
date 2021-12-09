@@ -11,9 +11,14 @@ import android.location.Location
 import android.location.LocationManager
 import android.media.AudioManager
 import android.media.MediaRecorder
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
@@ -70,7 +75,7 @@ class ActivityCallView : AppCompatActivity() {
             if (sessionName != null) {
                 storeGeoPoints(sessionName)
             }
-            openMapActivity(sessionName.toString())
+            openMainActivity()
         }
 
         mute.setOnClickListener {
@@ -83,6 +88,12 @@ class ActivityCallView : AppCompatActivity() {
         } else { // TODO reimplement for better error handling
            openMainActivity()
         }
+
+
+    }
+
+    override fun onBackPressed() {
+        Toast.makeText(applicationContext, "Disabled Back Press", Toast.LENGTH_SHORT).show()
     }
 
     private fun getCoordinate(l: Location) {
@@ -144,12 +155,16 @@ class ActivityCallView : AppCompatActivity() {
     }
 
     fun toggleAudioInput(button: MaterialButton) {
-        // toggle mute
         val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         audioManager.isMicrophoneMute = !audioManager.isMicrophoneMute
-
-        val newColor = if (audioManager.isMicrophoneMute) Color.RED else Color.DKGRAY
+        var newColor = Color.DKGRAY
+        var ToastMsg = "unmute"
+        if (audioManager.isMicrophoneMute) {
+            newColor = Color.RED
+            ToastMsg = "mute"
+        }
         button.backgroundTintList = ColorStateList.valueOf(newColor)
+        Toast.makeText(this@ActivityCallView, ToastMsg, Toast.LENGTH_SHORT).show()
     }
 
     private fun storeGeoPoints(name: String) {

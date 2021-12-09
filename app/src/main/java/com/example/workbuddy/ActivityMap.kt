@@ -2,6 +2,7 @@ package com.example.workbuddy
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.masoudss.lib.SeekBarOnProgressChanged
 import com.masoudss.lib.WaveformSeekBar
 import com.masoudss.lib.utils.WaveGravity
@@ -54,10 +56,7 @@ class ActivityMap : AppCompatActivity() {
         val sessionName = intent.getStringExtra("session")
 
         setContentView(R.layout.activity_map)
-        val button = findViewById<ImageButton>(R.id.return_button)
-        button.setOnClickListener {
-            openMainActivity()
-        }
+
 
         map = findViewById(R.id.map)
         val mapController = map.controller
@@ -121,28 +120,39 @@ class ActivityMap : AppCompatActivity() {
         waveformSeekBar.waveProgressColor = ContextCompat.getColor(this, R.color.purple_700)
         waveformSeekBar.waveGravity = WaveGravity.BOTTOM
         waveformSeekBar.onProgressChanged = object : SeekBarOnProgressChanged {
-
             override fun onProgressChanged(
                 waveformSeekBar: WaveformSeekBar,
                 progress: Float,
                 fromUser: Boolean
             ) {
-                if(fromUser) player.seekTo(progress.toInt())
-
+                if (fromUser)
+                    player.seekTo(progress.toInt())
+                updateMarker()
             }
         }
-        var observer = MediaObserver(waveformSeekBar,player, map, points)
-        Thread(observer).start()
+
+        Thread {
+            var last = player.currentPosition
+            while (!Thread.currentThread().isInterrupted) {
+                if(last == player.currentPosition || !player.isPlaying) continue
+                last = player.currentPosition
+                waveformSeekBar.progress = player.currentPosition.toFloat()
+                //updateMarker()
+            }
+        }.start()
 
 
-        val playbutton = findViewById<MaterialButton>(R.id.play_button)
+        val playbutton = findViewById<FloatingActionButton>(R.id.play_button)
         playbutton.setOnClickListener {
             if (player.isPlaying) {
                 player.pause()
-            } else {
-                player.start()
-            }
+                playbutton.setImageDrawable(resources.getDrawable(R.drawable.ic_media_play))
 
+            }else{
+                player.start()
+                playbutton.setImageDrawable(resources.getDrawable(R.drawable.ic_media_pause))
+
+            }
         }
     }
 
@@ -207,8 +217,6 @@ class ActivityMap : AppCompatActivity() {
         waveformSeekBar.progress = player.currentPosition.toFloat()
     }
 
-
-
     private fun projectOntoLine(line1 : GeoPoint, line2 : GeoPoint, point : GeoPoint) : Pair<Double, GeoPoint> {
         val aplong = point.longitude - line1.longitude
         val aplat = point.latitude - line1.latitude
@@ -222,42 +230,13 @@ class ActivityMap : AppCompatActivity() {
         return Pair(t, Utils.lerp(line1, line2, t))
     }
 
-    private class MediaObserver(
-        waveformSeekBar: WaveformSeekBar,
-        player: MediaPlayer,
-        map: MapView,
-        points: ArrayList<GeoPoint>
-    ) : Runnable {
-        val waveformSeekBar: WaveformSeekBar
-        val player: MediaPlayer
-        val map: MapView
-        val points: ArrayList<GeoPoint>
-
-        init{
-            this.waveformSeekBar= waveformSeekBar
-            this.player = player
-            this.map = map
-            this.points = points
-        }
-        override fun run() {
-            var last = player.currentPosition
-            while (true){
-                if(last == player.currentPosition || !player.isPlaying) continue
-                last = player.currentPosition
-                waveformSeekBar.progress = player.currentPosition.toFloat()
-                //Log.e("Progressbar", player.currentPosition.toString());
-                val marker = map.overlays.find { o -> o is Marker } as Marker
-                val index = player.currentPosition / (player.duration / points.size)
-                val prevWPTime = index*(player.duration / points.size)
-                val nextWPTime = (index+1)*(player.duration / points.size)
-                val progressToWP = (player.currentPosition-prevWPTime)/(nextWPTime- prevWPTime).toDouble()
-                marker.position = Utils.lerp(points[index % points.size], points[(index+1) % points.size], progressToWP)
-                map.invalidate()
-                Thread.sleep(10)
-            }
-        }
+    private fun updateMarker() {
+        val index = player.currentPosition / (player.duration / points.size)
+        val prevWPTime = index*(player.duration / points.size)
+        val nextWPTime = (index+1)*(player.duration / points.size)
+        val progressToWP = (player.currentPosition-prevWPTime)/(nextWPTime- prevWPTime).toDouble()
+        marker.position = Utils.lerp(points[index % points.size], points[(index+1) % points.size], progressToWP)
+        map.invalidate()
     }
-
-
-
 }
+
