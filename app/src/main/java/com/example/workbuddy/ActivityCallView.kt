@@ -74,6 +74,7 @@ class ActivityCallView : AppCompatActivity() {
         cancel.setOnClickListener {
             locationManager.removeUpdates(this::getCoordinate)
             storeGeoPoints()
+            openMainActivity()
         }
         mute.setOnClickListener {
             toggleAudioInput(mute)
