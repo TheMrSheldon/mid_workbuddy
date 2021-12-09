@@ -85,7 +85,7 @@ class ActivityCallView : AppCompatActivity() {
     }
 
     private fun getCoordinate(l: Location) {
-        points.add(GeoPoint(l.latitude, l.longitude))
+        points.add((GeoPoint(l.latitude, l.longitude)))
         //Log.d("geo", GeoPoint(l.latitude, l.longitude).toString())
     }
 
@@ -160,7 +160,8 @@ class ActivityCallView : AppCompatActivity() {
         coordinates.bufferedWriter().use { out ->
             out.write("{\n")
             for((index, coordinate) in points.withIndex()) {
-                out.write("    \"coordinate" + index.toString() + "\":" + coordinate.toString() + "\n")
+                out.write("    \"coordinate" + index.toString() + "\":[" + coordinate.toString() + "]\n")
+                //Log.d("storedcoordinate", coordinate.toString())
             }
             out.write("}")
         }
