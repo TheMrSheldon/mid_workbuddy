@@ -34,13 +34,23 @@
             android:gravity="center">
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/mute_button"
-                android:layout_width="80pt"
-                android:layout_height="80pt"
+                android:layout_width="60pt"
+                android:layout_height="60pt"
+                android:layout_margin="10pt"
                 android:background="@drawable/ic_round"
                 app:backgroundTint="@color/gray"
                 app:icon="@android:drawable/stat_notify_call_mute"
                 app:iconGravity="textStart"
-                app:iconSize="40pt" />
+                app:iconSize="30pt" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/flag_button"
+                android:layout_width="60pt"
+                android:layout_height="60pt"
+                android:layout_margin="10pt"
+                android:background="@drawable/ic_round"
+                app:backgroundTint="@color/gray"
+                app:iconGravity="textStart"
+                app:iconSize="30pt" />
         </TableRow>
     </TableLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
