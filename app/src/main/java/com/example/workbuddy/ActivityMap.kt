@@ -175,9 +175,12 @@ class ActivityMap : AppCompatActivity() {
 
     private fun onReplayPositionSelected(playbackPos : Double, point : GeoPoint, map: MapView) {
             // Update the marker
-            marker.position = point
-            map.invalidate()
-            player.seekTo(points.indexOf(point) * (player.duration / points.size))
+        marker.position = point
+        map.invalidate()
+        val playing = player.isPlaying
+        if(playing) player.pause()
+        player.seekTo(points.indexOf(point) * (player.duration / points.size))
+        if(playing) player.start()
     }
 
 
@@ -216,13 +219,14 @@ class ActivityMap : AppCompatActivity() {
 
         }
         override fun run() {
-            val last = player.currentPosition
+            var last = player.currentPosition
             while (true){
                 if(last == player.currentPosition || !player.isPlaying) continue
+                last = player.currentPosition
                 waveformSeekBar.progress = player.currentPosition.toFloat()
                 //Log.e("Progressbar", player.currentPosition.toString());
                 val marker = map.overlays.find { o -> o is Marker } as Marker
-                marker.position = points[player.currentPosition / (player.duration /points.size)]
+                marker.position = points[(player.currentPosition / (player.duration /points.size))] // hier ist n problem
                 map.invalidate()
                 Thread.sleep(10)
 
