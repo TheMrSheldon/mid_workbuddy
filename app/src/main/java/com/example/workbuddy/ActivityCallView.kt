@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.google.android.material.button.MaterialButton
+import org.json.JSONObject
 import org.osmdroid.util.GeoPoint
 import java.io.File
 import java.io.IOException
@@ -156,15 +157,15 @@ class ActivityCallView : AppCompatActivity() {
             time
         ) + ".json"
         val coordinates = File(dir)
+        val json = JSONObject()
         Log.d("dir", dir)
         coordinates.bufferedWriter().use { out ->
-            out.write("{\n")
             for((index, coordinate) in points.withIndex()) {
-                out.write("    \"coordinate" + index.toString() + "\":[" + coordinate.toString() + "],\n")
-                //Log.d("storedcoordinate", coordinate.toString())
+                json.put("coordinate" + index.toString(), coordinate)
             }
-            out.write("}")
+            out.write(json.toString(1))
         }
+        //Log.d("json_file", json.toString(1))
     }
 
 
