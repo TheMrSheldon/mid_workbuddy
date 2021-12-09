@@ -44,6 +44,7 @@ class ActivityMap : AppCompatActivity() {
     private lateinit var player: MediaPlayer
     private lateinit var map : MapView
     private var points = ArrayList<GeoPoint>()
+    private var markers = ArrayList<GeoPoint>()
     private lateinit var waveformSeekBar: WaveformSeekBar
     lateinit var marker : Marker
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +70,10 @@ class ActivityMap : AppCompatActivity() {
         val keys = json_obj.keys()
         while(keys.hasNext()) {
             val key = keys.next()
+            if(key == "Marker") {
+                markers = json_obj.get(key) as ArrayList<GeoPoint>
+                continue
+            }
             val values = json_obj.get(key).toString().split(',')
             points.add((GeoPoint(values[0].toDouble(), values[1].toDouble())))
         }

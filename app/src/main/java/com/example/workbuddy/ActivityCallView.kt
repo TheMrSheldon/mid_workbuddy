@@ -34,7 +34,7 @@ class ActivityCallView : AppCompatActivity() {
     private var recorder: MediaRecorder? = null
     private var audiofile: File? = null
     private var points = mutableListOf<GeoPoint>()
-
+    private var marker = mutableListOf<GeoPoint>()
     private lateinit var sessionID : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,13 +142,18 @@ class ActivityCallView : AppCompatActivity() {
     }
 
     private fun storeGeoPoints() {
-        val coordinates = File("${externalMediaDirs[0].absolutePath}/$sessionID.json")
-        val json = JSONObject()
+        var coordinates = File("${externalMediaDirs[0].absolutePath}/$sessionID.json")
+        var json = JSONObject()
         coordinates.bufferedWriter().use { out ->
             for((index, coordinate) in points.withIndex())
                 json.put("coordinate$index", coordinate)
+            json.put("Marker", marker)
             out.write(json.toString(1))
         }
     }
+    private fun setmarker(point:  GeoPoint){
+        marker.add(point)
+    }
+
 }
 
