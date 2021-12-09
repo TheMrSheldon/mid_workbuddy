@@ -48,9 +48,6 @@
             android:layout_height="wrap_content"
             android:gravity="center">
 
-
-
-
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/play_button"
                 android:layout_width="wrap_content"
@@ -58,23 +55,10 @@
                 android:layout_gravity="end|bottom"
                 android:layout_margin="10dp"
                 android:src="@android:drawable/ic_media_play"
-                android:tint="@android:color/secondary_text_light"
+                android:tint="@android:color/white"
                 app:backgroundTint="@color/purple_200"
                 app:fabSize="auto"/>
 
-            <!--com.imn.iivisu.RecorderVisualizer
-                android:id="@+id/visualizer"
-                android:layout_width="0dp"
-                android:layout_height="256dp"
-                app:maxAmp="100"
-                app:barWidth="3dp"
-                app:spaceBetweenBar="2dp"
-                app:loadedBarPrimeColor="@color/primaryLight"
-                app:backgroundBarPrimeColor="@color/gray"
-                app:layout_constraintBottom_toTopOf="@id/timeline_text_view"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" /-->
         </TableRow>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

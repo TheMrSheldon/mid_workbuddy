@@ -70,7 +70,7 @@ class ActivityCallView : AppCompatActivity() {
             if (sessionName != null) {
                 storeGeoPoints(sessionName)
             }
-            openMapActivity(sessionName.toString())
+            openMainActivity()
         }
 
         mute.setOnClickListener {
