@@ -144,12 +144,16 @@ class ActivityCallView : AppCompatActivity() {
     }
 
     fun toggleAudioInput(button: MaterialButton) {
-        // toggle mute
         val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         audioManager.isMicrophoneMute = !audioManager.isMicrophoneMute
-
-        val newColor = if (audioManager.isMicrophoneMute) Color.RED else Color.DKGRAY
+        var newColor = Color.DKGRAY
+        var ToastMsg = "unmute"
+        if (audioManager.isMicrophoneMute) {
+            newColor = Color.RED
+            ToastMsg = "mute"
+        }
         button.backgroundTintList = ColorStateList.valueOf(newColor)
+        Toast.makeText(this@ActivityCallView, ToastMsg, Toast.LENGTH_SHORT).show()
     }
 
     private fun storeGeoPoints(name: String) {
