@@ -165,21 +165,26 @@ class ActivityMap : AppCompatActivity() {
     private fun onClickOnMap(mapView: MapView, eventPos: GeoPoint?) : Boolean {
         //mapView.overlays.removeIf { o -> o is Marker }
         val closest = IntStream.range(0, points.size)
-            .mapToObj { i -> projectOntoLine(points[i], points[(i+1) % points.size], eventPos!!) }
-            .filter { pair -> !pair.first.isNaN() }
-            .min(Comparator.comparingDouble{p-> eventPos!!.distanceToAsDouble(p.second)}).get()
-        onReplayPositionSelected(closest.first, closest.second, map)
+            .mapToObj { i -> Pair(i, projectOntoLine(points[i], points[(i+1) % points.size], eventPos!!)) }
+            .filter { pair -> !pair.second.first.isNaN() }
+            .min(Comparator.comparingDouble{p-> eventPos!!.distanceToAsDouble(p.second.second)}).get()
+        val index = closest.first
+        val prevWPTime = index*(player.duration / points.size)
+        val nextWPTime = (index+1)*(player.duration / points.size)
+        val progressToWP = closest.second.first
+        val playbackPos = prevWPTime + progressToWP * (nextWPTime-prevWPTime)
+        onReplayPositionSelected(playbackPos, closest.second.second, map)
         return false
     }
 
     private fun onReplayPositionSelected(playbackPos : Double, point : GeoPoint, map: MapView) {
-            // Update the marker
         marker.position = point
         map.invalidate()
         val playing = player.isPlaying
         if(playing) player.pause()
-        player.seekTo(points.indexOf(point) * (player.duration / points.size))
+        player.seekTo(playbackPos.toInt())
         if(playing) player.start()
+        waveformSeekBar.progress = player.currentPosition.toFloat()
     }
 
 
