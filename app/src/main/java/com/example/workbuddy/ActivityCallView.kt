@@ -160,7 +160,7 @@ class ActivityCallView : AppCompatActivity() {
         coordinates.bufferedWriter().use { out ->
             out.write("{\n")
             for((index, coordinate) in points.withIndex()) {
-                out.write("    \"coordinate" + index.toString() + "\":[" + coordinate.toString() + "]\n")
+                out.write("    \"coordinate" + index.toString() + "\":[" + coordinate.toString() + "],\n")
                 //Log.d("storedcoordinate", coordinate.toString())
             }
             out.write("}")
