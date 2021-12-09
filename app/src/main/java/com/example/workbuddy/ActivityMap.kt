@@ -14,6 +14,8 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.masoudss.lib.SeekBarOnProgressChanged
 import com.masoudss.lib.WaveformSeekBar
+import com.masoudss.lib.utils.Utils
+import com.masoudss.lib.utils.WaveGravity
 
 import org.osmdroid.config.Configuration
 import org.osmdroid.views.MapView
@@ -96,6 +98,9 @@ class ActivityMap : AppCompatActivity() {
         waveformSeekBar.setSampleFrom(dir[0].absolutePath + "/" + sessionName.toString() + ".mp3")
         waveformSeekBar.progress = 0.0F
         waveformSeekBar.maxProgress = player.duration.toFloat()
+        waveformSeekBar.waveBackgroundColor = ContextCompat.getColor(this, R.color.purple_200)
+        waveformSeekBar.waveProgressColor = ContextCompat.getColor(this, R.color.purple_700)
+        waveformSeekBar.waveGravity = WaveGravity.BOTTOM
         waveformSeekBar.onProgressChanged = object : SeekBarOnProgressChanged {
 
             override fun onProgressChanged(
@@ -213,7 +218,7 @@ class ActivityMap : AppCompatActivity() {
         override fun run() {
             val last = player.currentPosition
             while (true){
-                if(last == player.currentPosition) continue
+                if(last == player.currentPosition || !player.isPlaying) continue
                 waveformSeekBar.progress = player.currentPosition.toFloat()
                 //Log.e("Progressbar", player.currentPosition.toString());
                 val marker = map.overlays.find { o -> o is Marker } as Marker
