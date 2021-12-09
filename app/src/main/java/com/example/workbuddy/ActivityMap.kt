@@ -2,6 +2,7 @@ package com.example.workbuddy
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -16,18 +17,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.masoudss.lib.SeekBarOnProgressChanged
 import com.masoudss.lib.WaveformSeekBar
 import com.masoudss.lib.utils.WaveGravity
+import org.json.JSONObject
 
 import org.osmdroid.config.Configuration
 import org.osmdroid.views.MapView
 import org.osmdroid.util.*
 import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint
+import org.osmdroid.util.GeoPoint
 
 import org.osmdroid.api.IMapController
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
+import java.io.BufferedReader
 import java.io.File
+import java.io.FileInputStream
+import java.io.InputStreamReader
 import java.lang.Double.max
 import java.lang.Double.min
 import java.util.stream.IntStream
@@ -55,15 +61,30 @@ class ActivityMap : AppCompatActivity() {
         map = findViewById(R.id.map)
         val mapController = map.controller
 
-        for (i in 0..29){
-            points.add(LabelledGeoPoint(
-                37 + Math.random() * 2, -8 + Math.random() * 2 , "Point #$i"
-            ))
+
+        // load json-file and store to points
+        val json_file = File(externalMediaDirs[0].absolutePath + "/" + sessionName.toString() + ".json")
+        val json_string = json_file.bufferedReader().use(BufferedReader::readText)
+        val json_obj = JSONObject(json_string)
+        val keys = json_obj.keys()
+        while(keys.hasNext()) {
+            val key = keys.next()
+            val values = json_obj.get(key).toString().split(',')
+            points.add((GeoPoint(values[0].toDouble(), values[1].toDouble())))
         }
+
+        // use random sample if no points added
+        if (points.isEmpty()) {
+            for (i in 0..29) {
+                points.add(
+                    LabelledGeoPoint(
+                        37 + Math.random() * 2, -8 + Math.random() * 2, "Point #$i"
+                    )
+                )
+            }
         points.add(points[0])
+        }
 
-
-        //TODO: MARKOS MACHT DAS HIER MIT DEN PUNKTEN und speichert es im points array ab
         map.addOnFirstLayoutListener { _, _, _, _, _ ->
             val bounds = BoundingBox.fromGeoPoints(points)
             map.zoomToBoundingBox(bounds, false)
@@ -218,3 +239,4 @@ class ActivityMap : AppCompatActivity() {
         map.invalidate()
     }
 }
+
