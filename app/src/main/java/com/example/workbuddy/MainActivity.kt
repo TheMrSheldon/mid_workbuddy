@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         // display past sessions
         val sessions: ArrayList<SessionItem> = getSessionData()
+        sessions.sortByDescending { session -> session.timestamp }
         val activityListView: ListView? = findViewById(R.id.session_list)
         activityListView!!.adapter = CustomListAdapter(this, sessions)
         activityListView.onItemClickListener =
