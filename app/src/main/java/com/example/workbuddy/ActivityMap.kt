@@ -125,10 +125,12 @@ class ActivityMap : AppCompatActivity() {
         playbutton.setOnClickListener {
             if (player.isPlaying) {
                 player.pause()
-                playbutton.setImageDrawable(resources.getDrawable(R.drawable.ic_media_pause))
+                playbutton.setImageDrawable(resources.getDrawable(R.drawable.ic_media_play))
+
             }else{
-            player.start()
-            playbutton.setImageDrawable(resources.getDrawable(R.drawable.ic_media_play))
+                player.start()
+                playbutton.setImageDrawable(resources.getDrawable(R.drawable.ic_media_pause))
+
             }
         }
     }
