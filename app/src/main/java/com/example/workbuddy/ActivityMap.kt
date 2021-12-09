@@ -101,27 +101,34 @@ class ActivityMap : AppCompatActivity() {
         waveformSeekBar.waveProgressColor = ContextCompat.getColor(this, R.color.purple_700)
         waveformSeekBar.waveGravity = WaveGravity.BOTTOM
         waveformSeekBar.onProgressChanged = object : SeekBarOnProgressChanged {
-
             override fun onProgressChanged(
                 waveformSeekBar: WaveformSeekBar,
                 progress: Float,
                 fromUser: Boolean
             ) {
-                if(fromUser) player.seekTo(progress.toInt())
-
+                if (fromUser)
+                    player.seekTo(progress.toInt())
+                updateMarker()
             }
         }
-        var observer = MediaObserver(waveformSeekBar,player, map, points)
-        Thread(observer).start()
+
+        Thread {
+            var last = player.currentPosition
+            while (!Thread.currentThread().isInterrupted) {
+                if(last == player.currentPosition || !player.isPlaying) continue
+                last = player.currentPosition
+                waveformSeekBar.progress = player.currentPosition.toFloat()
+                //updateMarker()
+            }
+        }.start()
 
 
         val playbutton = findViewById<MaterialButton>(R.id.play_button)
         playbutton.setOnClickListener {
-            if (player.isPlaying) {
+            if (player.isPlaying)
                 player.pause()
-            } else {
+            else
                 player.start()
-            }
 
         }
     }
@@ -187,8 +194,6 @@ class ActivityMap : AppCompatActivity() {
         waveformSeekBar.progress = player.currentPosition.toFloat()
     }
 
-
-
     private fun projectOntoLine(line1 : GeoPoint, line2 : GeoPoint, point : GeoPoint) : Pair<Double, GeoPoint> {
         val aplong = point.longitude - line1.longitude
         val aplat = point.latitude - line1.latitude
@@ -202,42 +207,12 @@ class ActivityMap : AppCompatActivity() {
         return Pair(t, Utils.lerp(line1, line2, t))
     }
 
-    private class MediaObserver(
-        waveformSeekBar: WaveformSeekBar,
-        player: MediaPlayer,
-        map: MapView,
-        points: ArrayList<GeoPoint>
-    ) : Runnable {
-        val waveformSeekBar: WaveformSeekBar
-        val player: MediaPlayer
-        val map: MapView
-        val points: ArrayList<GeoPoint>
-
-        init{
-            this.waveformSeekBar= waveformSeekBar
-            this.player = player
-            this.map = map
-            this.points = points
-        }
-        override fun run() {
-            var last = player.currentPosition
-            while (true){
-                if(last == player.currentPosition || !player.isPlaying) continue
-                last = player.currentPosition
-                waveformSeekBar.progress = player.currentPosition.toFloat()
-                //Log.e("Progressbar", player.currentPosition.toString());
-                val marker = map.overlays.find { o -> o is Marker } as Marker
-                val index = player.currentPosition / (player.duration / points.size)
-                val prevWPTime = index*(player.duration / points.size)
-                val nextWPTime = (index+1)*(player.duration / points.size)
-                val progressToWP = (player.currentPosition-prevWPTime)/(nextWPTime- prevWPTime).toDouble()
-                marker.position = Utils.lerp(points[index % points.size], points[(index+1) % points.size], progressToWP)
-                map.invalidate()
-                Thread.sleep(10)
-            }
-        }
+    private fun updateMarker() {
+        val index = player.currentPosition / (player.duration / points.size)
+        val prevWPTime = index*(player.duration / points.size)
+        val nextWPTime = (index+1)*(player.duration / points.size)
+        val progressToWP = (player.currentPosition-prevWPTime)/(nextWPTime- prevWPTime).toDouble()
+        marker.position = Utils.lerp(points[index % points.size], points[(index+1) % points.size], progressToWP)
+        map.invalidate()
     }
-
-
-
 }
