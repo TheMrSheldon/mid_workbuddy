@@ -38,7 +38,7 @@
                 app:wave_corner_radius="2dp"
                 app:wave_gravity="center"
                 android:id="@+id/waveformSeekBar"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"/>
 
         </TableRow>
