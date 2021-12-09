@@ -147,9 +147,8 @@ class ActivityCallView : AppCompatActivity() {
         val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         audioManager.isMicrophoneMute = !audioManager.isMicrophoneMute
 
-        // toggle background color of mute button
-        val nextColor = if (button.backgroundTintList == ColorStateList.valueOf(Color.RED)) Color.DKGRAY else Color.RED
-        button.backgroundTintList = ColorStateList.valueOf(nextColor)
+        val newColor = if (audioManager.isMicrophoneMute) Color.RED else Color.DKGRAY
+        button.backgroundTintList = ColorStateList.valueOf(newColor)
     }
 
     private fun storeGeoPoints(name: String) {
