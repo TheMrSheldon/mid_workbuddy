@@ -6,14 +6,15 @@
     android:layout_height="match_parent"
     tools:ignore="MissingClass">
 
-    <org.osmdroid.views.MapView android:id="@+id/map"
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        tilesource="Mapnik"
         android:layout_width="fill_parent"
         android:layout_height="0pt"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/map_tools"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/map_tools"
-        tilesource="Mapnik"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/map_tools"
@@ -30,16 +31,16 @@
             app:flow_horizontalAlign="center">
 
             <com.masoudss.lib.WaveformSeekBar
-                app:wave_progress="33"
-                app:wave_max_progress="100"
-                app:wave_width="5dp"
-                app:wave_gap="2dp"
-                app:wave_min_height="5dp"
-                app:wave_corner_radius="2dp"
-                app:wave_gravity="center"
                 android:id="@+id/waveformSeekBar"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp"
+                app:wave_corner_radius="2dp"
+                app:wave_gap="2dp"
+                app:wave_gravity="center"
+                app:wave_max_progress="100"
+                app:wave_min_height="5dp"
+                app:wave_progress="33"
+                app:wave_width="5dp" />
 
         </TableRow>
 
@@ -54,11 +55,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
                 android:layout_margin="10dp"
-                android:src="@android:drawable/ic_media_play"
-                android:tint="@android:color/white"
-                app:backgroundTint="@color/purple_200"
-                app:fabSize="auto"/>
-
+                android:src="@drawable/ic_media_play"
+                app:tint="#fff"
+                app:backgroundTint="@color/purple_200" />
         </TableRow>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
