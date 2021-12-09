@@ -31,19 +31,20 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ActivityCallView : AppCompatActivity() {
-
     private var recorder: MediaRecorder? = null
     private var audiofile: File? = null
-    private var xmlfile: File? = null
     private var points = mutableListOf<GeoPoint>()
 
-    private var time = Date()
+    private lateinit var sessionID : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_call_view)
 
         val sessionName = intent.getStringExtra("session")
+        val time = SimpleDateFormat("yyyyMMddHHmmss").format(Date())
+        sessionID = "${sessionName}_${time}"
+
 
         val cancel = findViewById<MaterialButton>(R.id.end_call_button)
         val mute = findViewById<MaterialButton>(R.id.mute_button)
@@ -72,24 +73,13 @@ class ActivityCallView : AppCompatActivity() {
         // define function for buttons
         cancel.setOnClickListener {
             locationManager.removeUpdates(this::getCoordinate)
-            if (sessionName != null) {
-                storeGeoPoints(sessionName)
-            }
+            storeGeoPoints()
             openMainActivity()
         }
-
         mute.setOnClickListener {
             toggleAudioInput(mute)
         }
-
-        if (sessionName != null) {
-            startAudioInstance(sessionName)
-
-        } else { // TODO reimplement for better error handling
-           openMainActivity()
-        }
-
-
+        startAudioInstance()
     }
 
     override fun onBackPressed() {
@@ -98,33 +88,19 @@ class ActivityCallView : AppCompatActivity() {
 
     private fun getCoordinate(l: Location) {
         points.add((GeoPoint(l.latitude, l.longitude)))
-        //Log.d("geo", GeoPoint(l.latitude, l.longitude).toString())
     }
 
-    fun openMainActivity() {
+    private fun openMainActivity() {
         val intent = Intent(this@ActivityCallView, MainActivity::class.java)
         terminateAudioInstance()
         startActivity(intent)
     }
 
-    fun openMapActivity(sessionName: String) {
-        Toast.makeText(this@ActivityCallView, "Call closed", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this@ActivityCallView, ActivityMap::class.java)
-        intent.putExtra("session", sessionName + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
-            time
-        ))
-        terminateAudioInstance()
-        startActivity(intent)
-    }
-
-    fun startAudioInstance(sessionName: String) {
+    private fun startAudioInstance() {
         // create file
-        val dir = externalMediaDirs
         try {
-            audiofile = File(externalMediaDirs[0].absolutePath+ "/" + sessionName + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
-                time
-            ) + ".mp3")
-
+            val filename = "${externalMediaDirs[0].absolutePath}/$sessionID.mp3"
+            audiofile = File(filename)
         } catch (e: IOException) {
             Log.e("Audiofile", "storage error");
         }
@@ -144,14 +120,12 @@ class ActivityCallView : AppCompatActivity() {
         }
     }
 
-
-    fun terminateAudioInstance() {
+    private fun terminateAudioInstance() {
         with(recorder) {
             this?.stop()
             this?.reset()
             this?.release()
         }
-
     }
 
     fun toggleAudioInput(button: MaterialButton) {
@@ -167,22 +141,14 @@ class ActivityCallView : AppCompatActivity() {
         Toast.makeText(this@ActivityCallView, ToastMsg, Toast.LENGTH_SHORT).show()
     }
 
-    private fun storeGeoPoints(name: String) {
-        val dir = externalMediaDirs[0].absolutePath+ "/" + name + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
-            time
-        ) + ".json"
-        val coordinates = File(dir)
+    private fun storeGeoPoints() {
+        val coordinates = File("${externalMediaDirs[0].absolutePath}/$sessionID.json")
         val json = JSONObject()
-        Log.d("dir", dir)
         coordinates.bufferedWriter().use { out ->
-            for((index, coordinate) in points.withIndex()) {
-                json.put("coordinate" + index.toString(), coordinate)
-            }
+            for((index, coordinate) in points.withIndex())
+                json.put("coordinate$index", coordinate)
             out.write(json.toString(1))
         }
-        //Log.d("json_file", json.toString(1))
     }
-
-
 }
 
