@@ -113,10 +113,10 @@ class ActivityMap : AppCompatActivity() {
 
         val playbutton = findViewById<MaterialButton>(R.id.play_button)
         playbutton.setOnClickListener {
-            if(player?.isPlaying){
-                player?.pause()
-            }else{
-                player?.start()
+            if (player.isPlaying) {
+                player.pause()
+            } else {
+                player.start()
             }
 
         }
@@ -187,9 +187,7 @@ class ActivityMap : AppCompatActivity() {
         val ap_ab = aplong*ablong + aplat*ablat
 
         val t = min(max(ap_ab/ab2, 0.0), 1.0)
-
-        val closest = GeoPoint(line1.latitude+ablat*t, line1.longitude + ablong * t)
-        return Pair(t, closest)
+        return Pair(t, Utils.lerp(line1, line2, t))
     }
 
     private class MediaObserver(
@@ -208,7 +206,6 @@ class ActivityMap : AppCompatActivity() {
             this.player = player
             this.map = map
             this.points = points
-
         }
         override fun run() {
             val last = player.currentPosition
@@ -217,11 +214,13 @@ class ActivityMap : AppCompatActivity() {
                 waveformSeekBar.progress = player.currentPosition.toFloat()
                 //Log.e("Progressbar", player.currentPosition.toString());
                 val marker = map.overlays.find { o -> o is Marker } as Marker
-                marker.position = points[player.currentPosition / (player.duration /points.size)]
+                val index = player.currentPosition / (player.duration / points.size)
+                val prevWPTime = index*(player.duration / points.size)
+                val nextWPTime = (index+1)*(player.duration / points.size)
+                val progressToWP = (player.currentPosition-prevWPTime)/(nextWPTime- prevWPTime).toDouble()
+                marker.position = Utils.lerp(points[index], points[index+1], progressToWP)
                 map.invalidate()
                 Thread.sleep(10)
-
-
             }
         }
     }
