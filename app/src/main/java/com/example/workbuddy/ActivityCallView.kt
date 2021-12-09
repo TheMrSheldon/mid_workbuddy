@@ -5,24 +5,20 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
 import android.media.AudioManager
 import android.media.MediaRecorder
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
-import android.util.Xml
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
 import com.google.android.material.button.MaterialButton
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.Polyline
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -34,6 +30,8 @@ class ActivityCallView : AppCompatActivity() {
     private var audiofile: File? = null
     private var xmlfile: File? = null
     private var points = mutableListOf<GeoPoint>()
+
+    private var time = Date()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +73,7 @@ class ActivityCallView : AppCompatActivity() {
         }
 
         mute.setOnClickListener {
-            toggleAudioInput()
+            toggleAudioInput(mute)
         }
 
         if (sessionName != null) {
@@ -88,6 +86,7 @@ class ActivityCallView : AppCompatActivity() {
 
     private fun getCoordinate(l: Location) {
         points.add(GeoPoint(l.latitude, l.longitude))
+        //Log.d("geo", GeoPoint(l.latitude, l.longitude).toString())
     }
 
     fun openMainActivity() {
@@ -100,7 +99,7 @@ class ActivityCallView : AppCompatActivity() {
         Toast.makeText(this@ActivityCallView, "Call closed", Toast.LENGTH_SHORT).show()
         val intent = Intent(this@ActivityCallView, ActivityMap::class.java)
         intent.putExtra("session", sessionName + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
-            Date()
+            time
         ))
         terminateAudioInstance()
         startActivity(intent)
@@ -111,7 +110,7 @@ class ActivityCallView : AppCompatActivity() {
         val dir = externalMediaDirs
         try {
             audiofile = File(externalMediaDirs[0].absolutePath+ "/" + sessionName + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
-                Date()
+                time
             ) + ".mp3")
 
         } catch (e: IOException) {
@@ -143,18 +142,19 @@ class ActivityCallView : AppCompatActivity() {
 
     }
 
-    fun toggleAudioInput() {
+    fun toggleAudioInput(button: MaterialButton) {
+        // toggle mute
         val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         audioManager.isMicrophoneMute = !audioManager.isMicrophoneMute
 
-        val toast = Toast.makeText(applicationContext, audioManager.isMicrophoneMute.toString(), Toast.LENGTH_SHORT)
-        toast.show()
-
+        // toggle background color of mute button
+        val nextColor = if (button.backgroundTintList == ColorStateList.valueOf(Color.RED)) Color.DKGRAY else Color.RED
+        button.backgroundTintList = ColorStateList.valueOf(nextColor)
     }
 
     private fun storeGeoPoints(name: String) {
         val dir = externalMediaDirs[0].absolutePath+ "/" + name + "_" + SimpleDateFormat("yyyyMMddHHmmss").format(
-            Date()
+            time
         ) + ".json"
         val coordinates = File(dir)
         Log.d("dir", dir)

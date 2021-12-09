@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.masoudss.lib.SeekBarOnProgressChanged
 import com.masoudss.lib.WaveformSeekBar
+import com.masoudss.lib.utils.WaveGravity
 
 import org.osmdroid.config.Configuration
 import org.osmdroid.views.MapView
@@ -96,6 +97,9 @@ class ActivityMap : AppCompatActivity() {
         waveformSeekBar.setSampleFrom(dir[0].absolutePath + "/" + sessionName.toString() + ".mp3")
         waveformSeekBar.progress = 0.0F
         waveformSeekBar.maxProgress = player.duration.toFloat()
+        waveformSeekBar.waveBackgroundColor = ContextCompat.getColor(this, R.color.purple_200)
+        waveformSeekBar.waveProgressColor = ContextCompat.getColor(this, R.color.purple_700)
+        waveformSeekBar.waveGravity = WaveGravity.BOTTOM
         waveformSeekBar.onProgressChanged = object : SeekBarOnProgressChanged {
 
             override fun onProgressChanged(
@@ -170,9 +174,12 @@ class ActivityMap : AppCompatActivity() {
 
     private fun onReplayPositionSelected(playbackPos : Double, point : GeoPoint, map: MapView) {
             // Update the marker
-            marker.position = point
-            map.invalidate()
-            player.seekTo(points.indexOf(point) * (player.duration / points.size))
+        marker.position = point
+        map.invalidate()
+        val playing = player.isPlaying
+        if(playing) player.pause()
+        player.seekTo(points.indexOf(point) * (player.duration / points.size))
+        if(playing) player.start()
     }
 
 
@@ -208,9 +215,10 @@ class ActivityMap : AppCompatActivity() {
             this.points = points
         }
         override fun run() {
-            val last = player.currentPosition
+            var last = player.currentPosition
             while (true){
-                if(last == player.currentPosition) continue
+                if(last == player.currentPosition || !player.isPlaying) continue
+                last = player.currentPosition
                 waveformSeekBar.progress = player.currentPosition.toFloat()
                 //Log.e("Progressbar", player.currentPosition.toString());
                 val marker = map.overlays.find { o -> o is Marker } as Marker
@@ -218,7 +226,7 @@ class ActivityMap : AppCompatActivity() {
                 val prevWPTime = index*(player.duration / points.size)
                 val nextWPTime = (index+1)*(player.duration / points.size)
                 val progressToWP = (player.currentPosition-prevWPTime)/(nextWPTime- prevWPTime).toDouble()
-                marker.position = Utils.lerp(points[index], points[index+1], progressToWP)
+                marker.position = Utils.lerp(points[index % points.size], points[(index+1) % points.size], progressToWP)
                 map.invalidate()
                 Thread.sleep(10)
             }
