@@ -8,13 +8,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CustomListAdapter extends BaseAdapter {
-    private final ArrayList<SessionItem> listData;
+    private final List<SessionItem> listData;
     private final LayoutInflater layoutInflater;
 
-    public CustomListAdapter(Context aContext, ArrayList<SessionItem> listData) {
+    public CustomListAdapter(Context aContext, List<SessionItem> listData) {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(aContext);
     }

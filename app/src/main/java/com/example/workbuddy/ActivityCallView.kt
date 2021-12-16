@@ -1,6 +1,5 @@
 package com.example.workbuddy
 
-
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -71,9 +70,7 @@ class ActivityCallView : AppCompatActivity() {
             storeGeoPoints()
             openMainActivity()
         }
-        mute.setOnClickListener {
-            toggleAudioInput(mute)
-        }
+        mute.setOnClickListener { toggleAudioInput(mute) }
         startAudioInstance()
     }
 
@@ -127,18 +124,18 @@ class ActivityCallView : AppCompatActivity() {
         val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         audioManager.isMicrophoneMute = !audioManager.isMicrophoneMute
         var newColor = Color.DKGRAY
-        var ToastMsg = "unmute"
+        var toastMsg = "unmute"
         if (audioManager.isMicrophoneMute) {
             newColor = Color.RED
-            ToastMsg = "mute"
+            toastMsg = "mute"
         }
         button.backgroundTintList = ColorStateList.valueOf(newColor)
-        Toast.makeText(this@ActivityCallView, ToastMsg, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this@ActivityCallView, toastMsg, Toast.LENGTH_SHORT).show()
     }
 
     private fun storeGeoPoints() {
-        var coordinates = File("${externalMediaDirs[0].absolutePath}/$sessionID.json")
-        var json = JSONObject()
+        val coordinates = File("${externalMediaDirs[0].absolutePath}/$sessionID.json")
+        val json = JSONObject()
         coordinates.bufferedWriter().use { out ->
             for((index, coordinate) in points.withIndex())
                 json.put("coordinate$index", coordinate)
@@ -146,9 +143,5 @@ class ActivityCallView : AppCompatActivity() {
             out.write(json.toString(1))
         }
     }
-    private fun setmarker(point:  GeoPoint){
-        marker.add(point)
-    }
-
 }
 
