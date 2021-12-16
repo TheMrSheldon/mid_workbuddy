@@ -2,23 +2,20 @@ package com.example.workbuddy
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.core.content.ContextCompat
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.masoudss.lib.SeekBarOnProgressChanged
 import com.masoudss.lib.WaveformSeekBar
 import com.masoudss.lib.utils.WaveGravity
-import org.json.JSONObject
 
+import org.json.JSONObject
 import org.osmdroid.config.Configuration
 import org.osmdroid.views.MapView
 import org.osmdroid.util.*
@@ -32,8 +29,6 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import java.io.BufferedReader
 import java.io.File
-import java.io.FileInputStream
-import java.io.InputStreamReader
 import java.lang.Double.max
 import java.lang.Double.min
 import java.util.stream.IntStream
@@ -71,7 +66,10 @@ class ActivityMap : AppCompatActivity() {
         while(keys.hasNext()) {
             val key = keys.next()
             if(key == "Marker") {
-                markers = json_obj.get(key) as ArrayList<GeoPoint>
+                val values = json_obj.get(key).toString().split(',')
+                for (v in values){
+                    markers.add((GeoPoint(v[0].toDouble(), v[1].toDouble())))
+                }
                 continue
             }
             val values = json_obj.get(key).toString().split(',')
