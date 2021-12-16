@@ -12,6 +12,8 @@ import android.media.AudioManager
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -34,6 +36,11 @@ class ActivityCallView : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_call_view)
+
+        val activityListView: ListView = findViewById(R.id.member_list);
+        val exampleActivities: Array<String> = getResources().getStringArray(R.array.array_example_members);
+        val arrayAdapter: ArrayAdapter<*> = ArrayAdapter<Any?>(this, android.R.layout.simple_list_item_1, exampleActivities)
+        activityListView.adapter = arrayAdapter
 
         val sessionName = intent.getStringExtra("session")
         val time = SimpleDateFormat("yyyyMMddHHmmss").format(Date())

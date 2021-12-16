@@ -1,56 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000E40">
-    <TableLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        app:layout_constraintBottom_toTopOf="@+id/bottomAppBar">
-        <TableRow
-            android:id="@+id/tableRow1"
-            android:layout_width="wrap_content"
+        android:layout_height="0pt"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/button_container"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ListView
+            android:id="@+id/member_list"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginBottom="10pt">
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/end_call_button"
-                android:layout_width="80pt"
-                android:layout_height="80pt"
-                android:background="@drawable/ic_round"
-                app:backgroundTint="@color/red"
-                app:icon="@drawable/ic_baseline_call_end_24"
-                app:iconGravity="textStart"
-                app:iconSize="40pt" />
-        </TableRow>
-        <TableRow
-            android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_margin="5pt"
+            tools:ignore="NestedScrolling" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/button_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15pt"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/end_call_button"
+            android:layout_width="80pt"
+            android:layout_height="80pt"
+            android:layout_margin="10pt"
+            android:background="@drawable/ic_round"
+            app:backgroundTint="@color/red"
+            app:icon="@drawable/ic_baseline_call_end_24"
+            app:iconGravity="textStart"
+            app:iconSize="40pt" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50pt"
             android:gravity="center">
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/mute_button"
-                android:layout_width="60pt"
-                android:layout_height="60pt"
-                android:layout_margin="10pt"
+                android:layout_width="50pt"
+                android:layout_height="50pt"
+                android:layout_margin="5pt"
                 android:background="@drawable/ic_round"
                 app:backgroundTint="@color/gray"
                 app:icon="@android:drawable/stat_notify_call_mute"
                 app:iconGravity="textStart"
                 app:iconSize="30pt" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/flag_button"
-                android:layout_width="60pt"
-                android:layout_height="60pt"
-                android:layout_margin="10pt"
+                android:layout_width="50pt"
+                android:layout_height="50pt"
+                android:layout_margin="5pt"
                 android:background="@drawable/ic_round"
                 app:backgroundTint="@color/gray"
+                app:icon="@drawable/ic_flag"
                 app:iconGravity="textStart"
                 app:iconSize="30pt" />
-        </TableRow>
-    </TableLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

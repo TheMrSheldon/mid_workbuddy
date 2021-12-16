@@ -4,4 +4,9 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="new_meeting">Create New Meeting</string>
+    <string-array name="array_example_members">
+        <item>Ingeltrude</item>
+        <item>Bernd</item>
+        <item>Maaaarkooos</item>
+    </string-array>
 </resources>
