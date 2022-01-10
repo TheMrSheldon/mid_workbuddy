@@ -29,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="30pt"
         android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/username_container"
         app:layout_constraintBottom_toTopOf="@id/button_container"
         app:layout_constraintHorizontal_bias="0.0"
@@ -40,6 +41,8 @@
             android:layout_height="wrap_content"
             android:text="@string/time_meeting"
             android:visibility="visible"
+            android:gravity="center"
+            android:textSize="40sp"
             tools:visibility="visible" />
     </LinearLayout>
 
@@ -74,7 +77,7 @@
                 android:layout_height="50pt"
                 android:layout_margin="5pt"
                 android:background="@drawable/ic_round"
-                app:backgroundTint="@color/lightgray"
+                app:backgroundTint="@color/gray"
                 app:icon="@android:drawable/stat_notify_call_mute"
                 app:iconGravity="textStart"
                 app:iconSize="30pt" />
@@ -89,7 +92,7 @@
                 android:insetRight="0dp"
                 android:insetBottom="0dp"
                 android:background="@drawable/ic_round"
-                app:backgroundTint="@color/lightgray"
+                app:backgroundTint="@color/gray"
                 app:icon="@drawable/ic_flag"
                 app:iconGravity="textStart"
                 app:iconSize="30pt" />
