@@ -12,8 +12,9 @@ class SessionItem(filename: String) {
 
     init {
         this.filename = filename
-        this.name = filename.split("_")[0]
-        this.timestamp = filename.split("_")[1]
+        val splits = filename.split("_")
+        this.name = filename.dropLast(splits[splits.size -1].length + 1)
+        this.timestamp = splits[splits.size - 1]
         val date: Date = SimpleDateFormat("yyyyMMddHHmmss").parse(timestamp)
         this.datetime = DateFormat.format("dd.MM.yy, HH:mm", date).toString()
     }
