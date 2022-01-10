@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         val input = EditText(this)
         alert.setView(input)
         alert.setPositiveButton("Start meeting") { _, _ ->
-            openCallViewActivity(input.text.toString())
+            openCallViewActivity(input.text.toString()) // TODO REGEX to remove special characters (not - and _ )
         }
         alert.setNegativeButton("Cancel") { _, _ -> {} }
         alert.show()
