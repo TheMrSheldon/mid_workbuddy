@@ -8,5 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#FF444444</color> <!-- like Color.DKGRAY -->
+    <color name="lightgray">#FF999999</color> <!-- like Color.DKGRAY -->
     <color name="red">#FF0000</color>
 </resources>

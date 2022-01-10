@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#000E40">
+    android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/username_container"
         android:layout_width="match_parent"
         android:layout_height="0pt"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/button_container"
+        app:layout_constraintBottom_toTopOf="@id/time_container"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
@@ -22,6 +22,18 @@
             android:layout_height="wrap_content"
             android:layout_margin="5pt"
             tools:ignore="NestedScrolling" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/time_container"
+        android:layout_width="match_parent"
+        android:layout_height="30pt"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/username_container"
+        app:layout_constraintBottom_toTopOf="@id/button_container"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="0.0">
+        <!-- TIME GOES HERE MARKOS -->
     </LinearLayout>
 
     <LinearLayout
@@ -55,7 +67,7 @@
                 android:layout_height="50pt"
                 android:layout_margin="5pt"
                 android:background="@drawable/ic_round"
-                app:backgroundTint="@color/gray"
+                app:backgroundTint="@color/lightgray"
                 app:icon="@android:drawable/stat_notify_call_mute"
                 app:iconGravity="textStart"
                 app:iconSize="30pt" />
@@ -65,8 +77,12 @@
                 android:layout_width="50pt"
                 android:layout_height="50pt"
                 android:layout_margin="5pt"
+                android:insetLeft="50dp"
+                android:insetTop="15dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
                 android:background="@drawable/ic_round"
-                app:backgroundTint="@color/gray"
+                app:backgroundTint="@color/lightgray"
                 app:icon="@drawable/ic_flag"
                 app:iconGravity="textStart"
                 app:iconSize="30pt" />
