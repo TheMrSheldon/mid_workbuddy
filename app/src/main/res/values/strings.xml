@@ -4,6 +4,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="new_meeting">Create New Meeting</string>
+    <string name="time_meeting">00:00:00</string>
     <string-array name="array_example_members">
         <item>Ingeltrude</item>
         <item>Bernd</item>
