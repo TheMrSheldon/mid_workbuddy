@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -79,6 +80,7 @@ class ActivityCallView : AppCompatActivity() {
         }
         mute.setOnClickListener { toggleAudioInput(mute) }
         startAudioInstance()
+        startClock()
     }
 
     override fun onBackPressed() {
@@ -149,6 +151,32 @@ class ActivityCallView : AppCompatActivity() {
             json.put("Marker", marker)
             out.write(json.toString(1))
         }
+    }
+
+    private fun startClock() {
+        val t: Thread = object : Thread() {
+            override fun run() {
+                try {
+                    val time_meeting: TextView = findViewById(R.id.time);
+                    var count = 0
+                    while (!isInterrupted) {
+                        sleep(1000)
+                        runOnUiThread {
+                            count += 1
+                            //val c = Calendar.getInstance()
+                            val hours = count / 3600
+                            val minutes = (count - hours * 3600) / 60
+                            val seconds = (count - hours * 3600) - minutes * 60
+                            val curTime =
+                                String.format("%02d:%02d:%02d", hours, minutes, seconds)
+                            time_meeting.setText(curTime) //change clock to your textview
+                        }
+                    }
+                } catch (e: InterruptedException) {
+                }
+            }
+        }
+        t.start()
     }
 }
 
