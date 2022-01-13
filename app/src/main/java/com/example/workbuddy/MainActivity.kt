@@ -22,7 +22,6 @@ import android.view.Menu
 import android.view.View
 import android.view.MenuItem
 
-
 class MainActivity : AppCompatActivity() {
     var sessions: ArrayList<SessionItem>? = null
 

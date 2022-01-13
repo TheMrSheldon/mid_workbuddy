@@ -42,19 +42,22 @@ public class CustomListAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.list_row_layout, null);
             holder = new ViewHolder();
             holder.name = convertView.findViewById(R.id.title);
-            holder.datetime = convertView.findViewById(R.id.datetime);
+            holder.date = convertView.findViewById(R.id.date);
+            holder.time = convertView.findViewById(R.id.time);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         holder.name.setText(listData.get(position).name);
-        holder.datetime.setText(listData.get(position).datetime);
+        holder.date.setText(listData.get(position).date);
+        holder.time.setText(listData.get(position).time);
         return convertView;
     }
 
     static class ViewHolder {
         TextView name;
-        TextView datetime;
+        TextView date;
+        TextView time;
     }
 }

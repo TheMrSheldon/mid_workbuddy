@@ -1,6 +1,8 @@
 package com.example.workbuddy
 
 import android.Manifest
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -28,6 +30,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.view.Menu
 import android.view.MenuItem
+import android.animation.ValueAnimator
+import android.animation.ValueAnimator.AnimatorUpdateListener
+
+import android.view.animation.DecelerateInterpolator
+
+
+
 
 
 class ActivityCallView : AppCompatActivity() {
@@ -86,6 +95,8 @@ class ActivityCallView : AppCompatActivity() {
         }
         mute.setOnClickListener { toggleAudioInput() }
         flag.setOnClickListener { getMarkerCoordinate() }
+
+
         startAudioInstance()
         startClock()
         updateMuteButton()
@@ -118,6 +129,7 @@ class ActivityCallView : AppCompatActivity() {
     }
 
     private fun getMarkerCoordinate() {
+        updateMarkerButton()
         if (points.count() > 0) { // what should happen if there is no point at the moment?
             marker.add((points.last()))
         }
@@ -177,6 +189,21 @@ class ActivityCallView : AppCompatActivity() {
         }
         mute.backgroundTintList = ColorStateList.valueOf(newColor)
         Toast.makeText(this@ActivityCallView, toastMsg, Toast.LENGTH_SHORT).show()
+    }
+
+    fun updateMarkerButton() {
+        val animator = ValueAnimator.ofInt(Color.GREEN, Color.DKGRAY)
+        animator.duration = 2000L
+        animator.setEvaluator(ArgbEvaluator())
+        animator.interpolator = DecelerateInterpolator(4f)
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Int
+            flag.setBackgroundTintList(ColorStateList.valueOf(animatedValue))
+        }
+
+        animator.start()
+        //butt.backgroundTintList = ColorStateList.valueOf(newColor)
+        Toast.makeText(this@ActivityCallView, "Marker set", Toast.LENGTH_SHORT).show()
     }
 
     private fun storeGeoPoints() {
