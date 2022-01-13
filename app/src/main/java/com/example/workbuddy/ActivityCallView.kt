@@ -43,7 +43,7 @@ class ActivityCallView : AppCompatActivity() {
     private var recorder: MediaRecorder? = null
     private var audiofile: File? = null
     private var points = mutableListOf<GeoPoint>()
-    private var marker = mutableListOf<GeoPoint>()
+    private var marker = mutableListOf<Int>()
     private lateinit var mute: MaterialButton
     private lateinit var flag: MaterialButton
     private lateinit var sessionID : String
@@ -131,7 +131,7 @@ class ActivityCallView : AppCompatActivity() {
     private fun getMarkerCoordinate() {
         updateMarkerButton()
         if (points.count() > 0) { // what should happen if there is no point at the moment?
-            marker.add((points.last()))
+            marker.add((points.size -1))
         }
     }
 
@@ -212,7 +212,8 @@ class ActivityCallView : AppCompatActivity() {
         coordinates.bufferedWriter().use { out ->
             for((index, coordinate) in points.withIndex())
                 json.put("coordinate$index", coordinate)
-            json.put("Marker", marker)
+            for((index, coordinate) in marker.withIndex())
+                json.put("Marker$index", coordinate)
             out.write(json.toString(1))
         }
     }
