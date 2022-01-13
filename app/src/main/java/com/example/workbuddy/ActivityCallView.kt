@@ -26,6 +26,9 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import android.view.Menu
+import android.view.MenuItem
+
 
 class ActivityCallView : AppCompatActivity() {
     private var recorder: MediaRecorder? = null
@@ -41,7 +44,7 @@ class ActivityCallView : AppCompatActivity() {
         setContentView(R.layout.activity_call_view)
 
         val activityListView: ListView = findViewById(R.id.member_list);
-        val exampleActivities: Array<String> = getResources().getStringArray(R.array.array_example_members);
+        val exampleActivities: Array<String> = resources.getStringArray(R.array.array_example_members);
         val arrayAdapter: ArrayAdapter<*> = ArrayAdapter<Any?>(this, android.R.layout.simple_list_item_1, exampleActivities)
         activityListView.adapter = arrayAdapter
 
@@ -86,6 +89,24 @@ class ActivityCallView : AppCompatActivity() {
         startAudioInstance()
         startClock()
         updateMuteButton()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.call_top_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.call_sharebutton) {
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "workbuddy://in01h0w1h1s31985719/")
+                type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {

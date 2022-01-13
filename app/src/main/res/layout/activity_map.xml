@@ -51,7 +51,7 @@
                 android:layout_margin="20dp"
                 android:src="@drawable/ic_media_play"
                 app:tint="#fff"
-                app:backgroundTint="@color/purple_200" />
+                app:backgroundTint="@color/gray" />
         </TableRow>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
