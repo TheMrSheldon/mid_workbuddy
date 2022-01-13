@@ -44,6 +44,7 @@ class ActivityCallView : AppCompatActivity() {
     private var audiofile: File? = null
     private var points = mutableListOf<GeoPoint>()
     private var marker = mutableListOf<GeoPoint>()
+    private var minutes = 0;
     private lateinit var mute: MaterialButton
     private lateinit var flag: MaterialButton
     private lateinit var sessionID : String
@@ -137,6 +138,7 @@ class ActivityCallView : AppCompatActivity() {
 
     private fun openMainActivity() {
         val intent = Intent(this@ActivityCallView, MainActivity::class.java)
+        writeDurationToFile()
         terminateAudioInstance()
         startActivity(intent)
     }
@@ -171,6 +173,12 @@ class ActivityCallView : AppCompatActivity() {
             this?.reset()
             this?.release()
         }
+    }
+
+    private fun writeDurationToFile() {
+        val abs = audiofile?.absolutePath
+        val newFilename = abs?.substring(0, abs.lastIndexOf('.')) + "#" + minutes + ".mp3"
+        audiofile?.renameTo(File(newFilename))
     }
 
     fun toggleAudioInput() {
@@ -229,7 +237,7 @@ class ActivityCallView : AppCompatActivity() {
                             count += 1
                             //val c = Calendar.getInstance()
                             val hours = count / 3600
-                            val minutes = (count - hours * 3600) / 60
+                            minutes = (count - hours * 3600) / 60
                             val seconds = (count - hours * 3600) - minutes * 60
                             val curTime =
                                 String.format("%02d:%02d:%02d", hours, minutes, seconds)
