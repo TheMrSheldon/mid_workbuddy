@@ -33,6 +33,7 @@ class ActivityCallView : AppCompatActivity() {
     private var points = mutableListOf<GeoPoint>()
     private var marker = mutableListOf<GeoPoint>()
     private lateinit var mute: MaterialButton
+    private lateinit var flag: MaterialButton
     private lateinit var sessionID : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +51,7 @@ class ActivityCallView : AppCompatActivity() {
 
 
         val cancel = findViewById<MaterialButton>(R.id.end_call_button)
+        flag = findViewById<MaterialButton>(R.id.flag_button)
         mute = findViewById<MaterialButton>(R.id.mute_button)
 
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -80,6 +82,7 @@ class ActivityCallView : AppCompatActivity() {
             openMainActivity()
         }
         mute.setOnClickListener { toggleAudioInput() }
+        flag.setOnClickListener { getMarkerCoordinate() }
         startAudioInstance()
         startClock()
         updateMuteButton()
@@ -91,6 +94,12 @@ class ActivityCallView : AppCompatActivity() {
 
     private fun getCoordinate(l: Location) {
         points.add((GeoPoint(l.latitude, l.longitude)))
+    }
+
+    private fun getMarkerCoordinate() {
+        if (points.count() > 0) { // what should happen if there is no point at the moment?
+            marker.add((points.last()))
+        }
     }
 
     private fun openMainActivity() {
