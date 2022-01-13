@@ -14,8 +14,17 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.widget.EditText
 import androidx.core.content.ContextCompat.checkSelfPermission
 import java.io.File
+import android.widget.AdapterView.AdapterContextMenuInfo
+
+import android.view.ContextMenu
+import android.view.ContextMenu.ContextMenuInfo
+import android.view.Menu
+import android.view.View
+import android.view.MenuItem
+
 
 class MainActivity : AppCompatActivity() {
+    var sessions: ArrayList<SessionItem>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         checkPermission()
 
         // display past sessions
-        val sessions = getSessionData().sortedByDescending(SessionItem::timestamp)
+        sessions = getSessionData().sortedByDescending(SessionItem::timestamp).toCollection(ArrayList())
         val activityListView = findViewById<ListView>(R.id.session_list)
         activityListView.adapter = CustomListAdapter(this, sessions)
         activityListView.onItemClickListener =
@@ -36,6 +45,8 @@ class MainActivity : AppCompatActivity() {
         // make session runnable
         val startMeetingButton = findViewById<Button>(R.id.StartMeeting)
         startMeetingButton.setOnClickListener { showSessionNamePrompt() }
+
+        registerForContextMenu(activityListView)
     }
 
     private fun showSessionNamePrompt() {
@@ -48,6 +59,34 @@ class MainActivity : AppCompatActivity() {
         }
         alert.setNegativeButton("Cancel") { _, _ -> {} }
         alert.show()
+    }
+
+    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo) {
+        if (v.id == R.id.session_list) {
+            menu.add(Menu.NONE, 1, Menu.NONE, "Delete")
+        }
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val info = item.menuInfo as AdapterContextMenuInfo
+        return if (item.itemId == 1) {
+            val lv = findViewById<ListView>(R.id.session_list)
+            val obj = lv.getItemAtPosition(info.position) as SessionItem
+            //Delete Audio
+            val mp3 = File(externalMediaDirs[0].absolutePath + "/" + obj.filename + ".mp3")
+            mp3.delete()
+            //Delete Metainfo
+            val json = File(externalMediaDirs[0].absolutePath + "/" + obj.filename + ".json")
+            json.delete()
+            //Remove from listview
+            sessions?.remove(obj)
+            val tmp = lv.adapter as CustomListAdapter
+            tmp.notifyDataSetChanged()
+
+            Toast.makeText(this, "${obj.name} deleted", Toast.LENGTH_SHORT).show()
+            true
+        } else
+            super.onContextItemSelected(item)
     }
 
     private fun getSessionData(): List<SessionItem> {
