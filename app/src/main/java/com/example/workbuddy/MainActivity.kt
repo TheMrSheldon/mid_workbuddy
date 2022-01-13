@@ -14,6 +14,12 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.widget.EditText
 import androidx.core.content.ContextCompat.checkSelfPermission
 import java.io.File
+import android.media.MediaMetadataRetriever
+
+import android.net.Uri
+
+
+
 
 class MainActivity : AppCompatActivity() {
 

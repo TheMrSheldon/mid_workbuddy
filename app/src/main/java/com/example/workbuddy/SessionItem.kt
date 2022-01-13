@@ -1,6 +1,8 @@
 package com.example.workbuddy
 
+import android.net.Uri
 import android.text.format.DateFormat
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -8,7 +10,8 @@ class SessionItem(filename: String) {
     lateinit var filename: String
     lateinit var name: String
     lateinit var timestamp: String
-    lateinit var datetime: String
+    lateinit var date: String
+    lateinit var time: String
 
     init {
         this.filename = filename
@@ -16,6 +19,7 @@ class SessionItem(filename: String) {
         this.name = filename.dropLast(splits[splits.size -1].length + 1)
         this.timestamp = splits[splits.size - 1]
         val date: Date = SimpleDateFormat("yyyyMMddHHmmss").parse(timestamp)
-        this.datetime = DateFormat.format("dd.MM.yy, HH:mm", date).toString()
+        this.date = DateFormat.format("dd.MM.yy", date).toString()
+        this.time = DateFormat.format("HH:mm", date).toString() + " (10 Minutes)" // TODO: Get animation
     }
 }
