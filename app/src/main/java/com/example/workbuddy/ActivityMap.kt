@@ -2,6 +2,7 @@ package com.example.workbuddy
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.ColorFilter
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -39,7 +40,7 @@ class ActivityMap : AppCompatActivity() {
     private lateinit var player: MediaPlayer
     private lateinit var map : MapView
     private var points = ArrayList<GeoPoint>()
-    private var markers = ArrayList<GeoPoint>()
+    private var markers = ArrayList<Int>()
     private lateinit var waveformSeekBar: WaveformSeekBar
     lateinit var marker : Marker
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,17 +66,17 @@ class ActivityMap : AppCompatActivity() {
         val keys = json_obj.keys()
         while(keys.hasNext()) {
             val key = keys.next()
-            if(key == "Marker") {
-                val values = json_obj.get(key).toString().split(',')
+            if("Marker" in key) {
+               val values = json_obj.get(key).toString().split(',')
                 for (v in values){
-                    markers.add((GeoPoint(v[0].toDouble(), v[1].toDouble())))
+                    markers.add(v.toInt())
                 }
                 continue
             }
             val values = json_obj.get(key).toString().split(',')
             points.add((GeoPoint(values[0].toDouble(), values[1].toDouble())))
         }
-
+        //markers = json_obj.getJSONArray("Marker") as ArrayList<GeoPoint>
         // use random sample if no points added
         if (points.isEmpty()) {
             for (i in 0..29) {
@@ -87,7 +88,7 @@ class ActivityMap : AppCompatActivity() {
             }
         points.add(points[0])
         }
-
+        Log.e("TESTING",markers.toString())
         map.addOnFirstLayoutListener { _, _, _, _, _ ->
             val bounds = BoundingBox.fromGeoPoints(points)
             map.zoomToBoundingBox(bounds, false, 5, 20.0, 0)
@@ -112,7 +113,7 @@ class ActivityMap : AppCompatActivity() {
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         map.overlays.add(marker)
         map.invalidate()
-
+        setflags()
         val dir = externalMediaDirs
         player = MediaPlayer.create(this, Uri.fromFile(File(dir[0].absolutePath +"/"+ sessionName.toString() + ".mp3")))
         waveformSeekBar = findViewById<WaveformSeekBar>(R.id.waveformSeekBar)
@@ -209,6 +210,18 @@ class ActivityMap : AppCompatActivity() {
         val playbackPos = prevWPTime + progressToWP * (nextWPTime-prevWPTime)
         onReplayPositionSelected(playbackPos, closest.second.second, map)
         return false
+    }
+    private fun setflags(){
+        for (point in markers){
+            Log.e("TESTING",point.toString())
+            val flag = Marker(map)
+            flag.position = points[point]
+            flag.icon = ContextCompat.getDrawable(this, R.drawable.ic_flag)
+            flag.icon.setTint(Color.BLUE)
+            flag.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
+            map.overlays.add(flag)
+        }
+        map.invalidate()
     }
 
     private fun onReplayPositionSelected(playbackPos : Double, point : GeoPoint, map: MapView) {

@@ -43,7 +43,7 @@ class ActivityCallView : AppCompatActivity() {
     private var recorder: MediaRecorder? = null
     private var audiofile: File? = null
     private var points = mutableListOf<GeoPoint>()
-    private var marker = mutableListOf<GeoPoint>()
+    private var marker = mutableListOf<Int>()
     private var minutes = 0;
     private lateinit var mute: MaterialButton
     private lateinit var flag: MaterialButton
