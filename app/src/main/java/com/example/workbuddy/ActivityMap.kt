@@ -90,7 +90,7 @@ class ActivityMap : AppCompatActivity() {
 
         map.addOnFirstLayoutListener { _, _, _, _, _ ->
             val bounds = BoundingBox.fromGeoPoints(points)
-            map.zoomToBoundingBox(bounds, false)
+            map.zoomToBoundingBox(bounds, false, 5, 20.0, 0)
             map.invalidate()
         }
 
@@ -196,7 +196,8 @@ class ActivityMap : AppCompatActivity() {
     }
 
     private fun onClickOnMap(mapView: MapView, eventPos: GeoPoint?) : Boolean {
-        //mapView.overlays.removeIf { o -> o is Marker }
+        if (points.size <= 1)
+            return false
         val closest = IntStream.range(0, points.size)
             .mapToObj { i -> Pair(i, projectOntoLine(points[i], points[(i+1) % points.size], eventPos!!)) }
             .filter { pair -> !pair.second.first.isNaN() }

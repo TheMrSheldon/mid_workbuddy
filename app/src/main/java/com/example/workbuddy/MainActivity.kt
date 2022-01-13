@@ -23,8 +23,7 @@ class MainActivity : AppCompatActivity() {
         checkPermission()
 
         // display past sessions
-        val sessions = getSessionData()
-        sessions.sortedByDescending(SessionItem::timestamp)
+        val sessions = getSessionData().sortedByDescending(SessionItem::timestamp)
         val activityListView = findViewById<ListView>(R.id.session_list)
         activityListView.adapter = CustomListAdapter(this, sessions)
         activityListView.onItemClickListener =
@@ -41,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showSessionNamePrompt() {
         val alert: AlertDialog.Builder = AlertDialog.Builder(this)
-        alert.setTitle("Meeting name")
+        alert.setTitle("Enter a name for the meeting:")
         val input = EditText(this)
         alert.setView(input)
         alert.setPositiveButton("Start meeting") { _, _ ->

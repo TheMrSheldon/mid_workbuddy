@@ -32,6 +32,7 @@ class ActivityCallView : AppCompatActivity() {
     private var audiofile: File? = null
     private var points = mutableListOf<GeoPoint>()
     private var marker = mutableListOf<GeoPoint>()
+    private lateinit var mute: MaterialButton
     private lateinit var sessionID : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +50,7 @@ class ActivityCallView : AppCompatActivity() {
 
 
         val cancel = findViewById<MaterialButton>(R.id.end_call_button)
-        val mute = findViewById<MaterialButton>(R.id.mute_button)
+        mute = findViewById<MaterialButton>(R.id.mute_button)
 
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (ActivityCompat.checkSelfPermission(
@@ -78,9 +79,10 @@ class ActivityCallView : AppCompatActivity() {
             storeGeoPoints()
             openMainActivity()
         }
-        mute.setOnClickListener { toggleAudioInput(mute) }
+        mute.setOnClickListener { toggleAudioInput() }
         startAudioInstance()
         startClock()
+        updateMuteButton()
     }
 
     override fun onBackPressed() {
@@ -129,16 +131,21 @@ class ActivityCallView : AppCompatActivity() {
         }
     }
 
-    fun toggleAudioInput(button: MaterialButton) {
+    fun toggleAudioInput() {
         val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         audioManager.isMicrophoneMute = !audioManager.isMicrophoneMute
+        updateMuteButton()
+    }
+
+    fun updateMuteButton() {
+        val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         var newColor = Color.DKGRAY
         var toastMsg = "unmute"
         if (audioManager.isMicrophoneMute) {
             newColor = Color.RED
             toastMsg = "mute"
         }
-        button.backgroundTintList = ColorStateList.valueOf(newColor)
+        mute.backgroundTintList = ColorStateList.valueOf(newColor)
         Toast.makeText(this@ActivityCallView, toastMsg, Toast.LENGTH_SHORT).show()
     }
 
