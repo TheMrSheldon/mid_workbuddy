@@ -221,12 +221,11 @@ class ActivityMap : AppCompatActivity() {
     }
     private fun setflags(){
         for (point in markers){
-            Log.e("TESTING",point.toString())
             val flag = Marker(map)
             flag.position = points[point]
             flag.icon = ContextCompat.getDrawable(this, R.drawable.ic_flag)
-            flag.icon.setTint(Color.BLUE)
-            flag.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            flag.icon.setTint(Color.GREEN)
+            flag.setAnchor(Marker.ANCHOR_LEFT, Marker.ANCHOR_BOTTOM)
             map.overlays.add(flag)
         }
         map.invalidate()
