@@ -60,17 +60,25 @@ class ActivityMap : AppCompatActivity() {
 
 
         // load json-file and store to points
-        val json_file = File(externalMediaDirs[0].absolutePath + "/" + sessionName.toString() + ".json")
+        val json_file = File(externalMediaDirs[0].absolutePath + "/" + sessionName.toString().split('#')[0] + ".json")
         val json_string = json_file.bufferedReader().use(BufferedReader::readText)
         val json_obj = JSONObject(json_string)
         val keys = json_obj.keys()
         while(keys.hasNext()) {
             val key = keys.next()
             if("Marker" in key) {
-               val values = json_obj.get(key).toString().split(',')
-                for (v in values){
-                    markers.add(v.toInt())
+
+                try {
+                    val values = json_obj.get(key).toString().split(',')
+                    for (v in values){
+                        Log.e("FLAGS", v.toInt().toString())
+                        markers.add(v.toInt())
+                    }
+                } catch (e: Exception) {
+                    // handler
+                    Log.e("FLAGS", "No Flags")
                 }
+
                 continue
             }
             val values = json_obj.get(key).toString().split(',')
@@ -218,7 +226,7 @@ class ActivityMap : AppCompatActivity() {
             flag.position = points[point]
             flag.icon = ContextCompat.getDrawable(this, R.drawable.ic_flag)
             flag.icon.setTint(Color.BLUE)
-            flag.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
+            flag.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             map.overlays.add(flag)
         }
         map.invalidate()

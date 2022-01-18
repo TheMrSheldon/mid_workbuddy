@@ -132,7 +132,7 @@ class ActivityCallView : AppCompatActivity() {
     private fun getMarkerCoordinate() {
         updateMarkerButton()
         if (points.count() > 0) { // what should happen if there is no point at the moment?
-            marker.add((points.last()))
+            marker.add((points.size -1))
         }
     }
 
@@ -220,7 +220,8 @@ class ActivityCallView : AppCompatActivity() {
         coordinates.bufferedWriter().use { out ->
             for((index, coordinate) in points.withIndex())
                 json.put("coordinate$index", coordinate)
-            json.put("Marker", marker)
+            for((index, coordinate) in marker.withIndex())
+                json.put("Marker", coordinate)
             out.write(json.toString(1))
         }
     }
