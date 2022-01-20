@@ -136,6 +136,8 @@ class ActivityCallView : AppCompatActivity() {
         }
     }
 
+
+
     private fun openMainActivity() {
         val intent = Intent(this@ActivityCallView, MainActivity::class.java)
         writeDurationToFile()
@@ -221,7 +223,7 @@ class ActivityCallView : AppCompatActivity() {
             for((index, coordinate) in points.withIndex())
                 json.put("coordinate$index", coordinate)
             for((index, coordinate) in marker.withIndex())
-                json.put("Marker", coordinate)
+                json.put("Marker$index", coordinate)
             out.write(json.toString(1))
         }
     }
